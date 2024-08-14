@@ -1,23 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:pecockapp/image_list.dart';
-import 'package:pecockapp/modules/splash/screens/splash_screen.dart';
-import 'package:pecockapp/utils.dart';
+import 'package:pecockapp/global/utils/image_list.dart';
+import 'package:pecockapp/global/utils/utils.dart';
 
-class SplashImage extends StatefulWidget {
+class SplashImage extends StatelessWidget {
   const SplashImage({
     super.key,
-    required this.widget,
   });
 
-  final SplashScreen widget;
-
-  @override
-  State<SplashImage> createState() => _SplashImageState();
-}
-
-class _SplashImageState extends State<SplashImage> {
   @override
   Widget build(BuildContext context) {
     return Container(
