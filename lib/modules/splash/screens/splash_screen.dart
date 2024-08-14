@@ -32,7 +32,7 @@ class _SplashScreen extends State<SplashScreen> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: TextButton.icon(
           onPressed: () {
-            Navigator.pushNamed(context, '/logindd');
+            Navigator.pushNamed(context, '/login');
           },
           style: TextButton.styleFrom(
               foregroundColor: Colors.white,
