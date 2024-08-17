@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/blocs/internet/internet_state.dart';
 import 'package:pecockapp/global/widgets/image_picker_widget.dart';
-import 'package:pecockapp/global/widgets/toast.dart';
 import 'package:pecockapp/modules/login/widgets/login_widget.dart';
 
 class LoginScreen extends StatefulWidget {
