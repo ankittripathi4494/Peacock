@@ -22,7 +22,7 @@ class SplashScreen extends StatelessWidget {
       bloc: InternetCubit(),
       listener: (context, state) {
         if (state == InternetState.internetAvailable) {
-          Timer(Durations.medium4, () {
+          Timer(Durations.long3, () {
             Navigator.pushReplacementNamed(context, '/login');
           });
         } else if (state == InternetState.internetLost) {
@@ -37,12 +37,12 @@ class SplashScreen extends StatelessWidget {
                 colors: [Colors.deepPurple, Colors.blue],
                 begin: Alignment.bottomLeft,
                 end: Alignment.topRight)),
-        child: const Scaffold(
+        child:  Scaffold(
           backgroundColor: Colors.transparent,
-          body: Center(
+          body: const Center(
             child: SplashImage(),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           floatingActionButton: FloattingPointWidget(),
         ),
       ),

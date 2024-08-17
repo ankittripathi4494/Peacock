@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/blocs/internet/internet_state.dart';
+import 'package:pecockapp/global/widgets/image_picker_widget.dart';
+import 'package:pecockapp/global/widgets/toast.dart';
 import 'package:pecockapp/modules/login/widgets/login_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -38,10 +40,19 @@ class _LoginScreen extends State<LoginScreen> {
                 colors: [Colors.deepPurple, Colors.blue],
                 begin: Alignment.bottomLeft,
                 end: Alignment.topRight)),
-        child: const Scaffold(
+        child: Scaffold(
           backgroundColor: Colors.transparent,
-          body: Center(
-            child: LoginWidget(),
+          body: InkWell(
+            onTap: () {
+              ImagePickerWidget.imagePicker(context, galleryFunc: () {
+                
+              }, cameraFunc: () {
+                
+              },);
+            },
+            child: const Center(
+              child: LoginWidget(),
+            ),
           ),
         ),
       ),

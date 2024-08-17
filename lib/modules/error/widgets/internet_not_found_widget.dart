@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:pecockapp/global/utils/image_list.dart';
+import 'package:pecockapp/global/utils/utils.dart';
 
 class InternetNotFoundWidget extends StatefulWidget {
   const InternetNotFoundWidget({
@@ -23,9 +25,10 @@ class _InternetNotFoundWidgetState extends State<InternetNotFoundWidget> {
               colors: [Colors.transparent, Colors.transparent],
               begin: Alignment.bottomLeft,
               end: Alignment.topRight)),
-      child: const Text(
-        "Internet not found Screen",
-        style: TextStyle(color: Colors.white),
+      child:Image.asset(
+        ImageList.noInternetImage,
+        width: context.screenHeight * 0.8,
+        height: context.screenHeight * 0.8,
       ),
     );
   }
