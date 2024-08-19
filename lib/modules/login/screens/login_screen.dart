@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/blocs/internet/internet_state.dart';
-import 'package:pecockapp/global/widgets/image_picker_widget.dart';
+import 'package:pecockapp/global/widgets/dialog.dart';
 import 'package:pecockapp/modules/login/widgets/login_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,6 +21,7 @@ class LoginScreen extends StatefulWidget {
 
 // private class
 class _LoginScreen extends State<LoginScreen> {
+  bool selectedData = false;
   @override
   Widget build(BuildContext context) {
     // Scaffold represents a screen or page
@@ -41,16 +42,111 @@ class _LoginScreen extends State<LoginScreen> {
                 end: Alignment.topRight)),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          body: InkWell(
-            onTap: () {
-              ImagePickerWidget.imagePicker(context, galleryFunc: () {
-                
-              }, cameraFunc: () {
-                
-              },);
-            },
-            child: const Center(
-              child: LoginWidget(),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                  return Switch(
+                    value: selectedData,
+                    onChanged: (value) {
+                      if (selectedData == true) {
+                        CustomAlertDialog.showCustomDialogForGeneral(context,
+                            icon: const Icon(
+                              Icons.notification_important,
+                              size: 30,
+                              color: Colors.deepOrange,
+                            ),
+                            title: const Text(
+                              "Do you want disable this?",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            actions: [
+                              TextButton.icon(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                ),
+                                onPressed: () {
+                                  print("selectedData:- $selectedData");
+                                  setState(() {
+                                    selectedData = false;
+                                  });
+                                  Navigator.pop(context);
+
+                                  print("selectedData:- $selectedData");
+                                },
+                                label: const Text("Yes"),
+                                icon: const Icon(Icons.check_circle),
+                              ),
+                              TextButton.icon(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                label: const Text("No"),
+                                icon: const Icon(Icons.cancel_rounded),
+                              ),
+                            ]);
+                      } else {
+                        CustomAlertDialog.showCustomDialogForGeneral(context,
+                            icon: const Icon(
+                              Icons.notification_important,
+                              size: 30,
+                              color: Colors.deepOrange,
+                            ),
+                            title: const Text(
+                              "Do you want enable this?",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            actions: [
+                              TextButton.icon(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                ),
+                                onPressed: () {
+                                  print("selectedData:- $selectedData");
+                                  setState(() {
+                                    selectedData = true;
+                                  });
+                                  Navigator.pop(context);
+
+                                  print("selectedData:- $selectedData");
+                                },
+                                label: const Text("Yes"),
+                                icon: const Icon(Icons.check_circle),
+                              ),
+                              TextButton.icon(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                label: const Text("No"),
+                                icon: const Icon(Icons.cancel_rounded),
+                              ),
+                            ]);
+                      }
+                    },
+                  );
+                }),
+                const LoginWidget(),
+              ],
             ),
           ),
         ),
