@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pecockapp/modules/dashboard/screens/dashboard_screen.dart';
 import 'package:pecockapp/modules/error/screens/internet_not_found_screen.dart';
 import 'package:pecockapp/modules/error/screens/page_not_found_screen.dart';
 import 'package:pecockapp/modules/login/bloc/login_bloc.dart';
@@ -63,7 +64,19 @@ class RoutesSection {
             ),
           ),
         );
-
+ case '/dashboard':
+        if (args is Map<String, dynamic>) {
+          return MaterialPageRoute(
+            builder: (context) => DashboardScreen(
+              argus: args,
+            ),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (context) => DashboardScreen(
+            argus: const {},
+          ),
+        );
       case '/internet-disconnect':
         if (args is Map<String, dynamic>) {
           return MaterialPageRoute(

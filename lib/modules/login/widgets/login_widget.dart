@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/utils/utils.dart';
+import 'package:pecockapp/global/widgets/auto_schedule_task.dart';
 import 'package:pecockapp/global/widgets/form_widgets.dart';
+import 'package:pecockapp/global/widgets/toast.dart';
 import 'package:pecockapp/modules/login/bloc/login_bloc.dart';
 import 'package:pecockapp/modules/login/bloc/login_event.dart';
 import 'package:pecockapp/modules/login/bloc/login_state.dart';
@@ -41,6 +43,20 @@ class _LoginWidgetState extends State<LoginWidget> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
+                (state is LoginFormSubmitSuccessState)
+                    ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
+                        Navigator.pushReplacementNamed(context, '/dashboard');
+                        ToastedNotification.successToast(context,
+                            description: state.successMessage);
+                      }, taskWaitDuration: Durations.short4)
+                    : const SizedBox.shrink(),
+                (state is LoginFormSubmitFailedState)
+                    ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
+                        Navigator.pushReplacementNamed(context, '/login');
+                        ToastedNotification.errorToast(context,
+                            description: state.failedMessage);
+                      }, taskWaitDuration: Durations.short4)
+                    : const SizedBox.shrink(),
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -101,39 +117,41 @@ class _LoginWidgetState extends State<LoginWidget> {
                 ),
                 (state is LoginFormValidState)
                     ? Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      child: SizedBox(
-                          width: context.screenWidth,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.deepPurple,
-                                  foregroundColor: Colors.white),
-                              onPressed: () {
-                                 BlocProvider.of<LoginBloc>(context).add(
-                              LoginFormSubmitEvent(
-                                  usernameData: usernameController.text,
-                                  passwordData: passwordController.text));
-                              },
-                              child: const Text("Login"))),
-                    )
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        child: SizedBox(
+                            width: context.screenWidth,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.deepPurple,
+                                    foregroundColor: Colors.white),
+                                onPressed: () {
+                                  BlocProvider.of<LoginBloc>(context).add(
+                                      LoginFormSubmitEvent(
+                                          usernameData: usernameController.text,
+                                          passwordData:
+                                              passwordController.text));
+                                },
+                                child: const Text("Login"))),
+                      )
                     : Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      child: SizedBox(
-                          width: context.screenWidth,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.grey),
-                              onPressed: () {
-                                 BlocProvider.of<LoginBloc>(context).add(
-                              LoginTextChangedEvent(
-                                  usernameText: usernameController.text,
-                                  passwordText: passwordController.text));
-                              },
-                              child: const Text("Login"))),
-                    ),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        child: SizedBox(
+                            width: context.screenWidth,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: Colors.grey),
+                                onPressed: () {
+                                  BlocProvider.of<LoginBloc>(context).add(
+                                      LoginTextChangedEvent(
+                                          usernameText: usernameController.text,
+                                          passwordText:
+                                              passwordController.text));
+                                },
+                                child: const Text("Login"))),
+                      ),
                 const SizedBox(
                   height: 10,
                 ),

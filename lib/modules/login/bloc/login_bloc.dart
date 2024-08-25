@@ -1,8 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pecockapp/global/utils/database_helper.dart';
+import 'package:pecockapp/global/utils/logger_util.dart';
+import 'package:pecockapp/global/utils/shared_preferences_helper.dart';
 import 'package:pecockapp/modules/login/bloc/login_event.dart';
 import 'package:pecockapp/modules/login/bloc/login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  SharedPreferencesHelper sph = SharedPreferencesHelper();
+  DatabaseHelper dbh = DatabaseHelper();
   LoginBloc() : super(LoginInitial()) {
     on<LoginTextChangedEvent>(_loginValidFunc);
     on<LoginFormSubmitEvent>(_loginFormSubmitFunc);
@@ -28,5 +33,25 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  _loginFormSubmitFunc(LoginFormSubmitEvent event, Emitter<LoginState> emit) {}
+  _loginFormSubmitFunc(
+      LoginFormSubmitEvent event, Emitter<LoginState> emit) async {
+    LoggerUtil().errorData(event.toString());
+    try {
+      List<Map<String, dynamic>>? fetchRecound = await dbh.queryRowByClause(
+          "UserCredData",
+          "username=? and password=?",
+          [event.usernameData.trim(), event.passwordData.trim()]);
+      if (fetchRecound!.isNotEmpty) {
+        sph.setBool("isLoggedIn", true);
+        sph.setString("username", event.usernameData.trim());
+        emit(LoginFormSubmitSuccessState(successMessage: "Login Successful"));
+      } else {
+        emit(LoginFormSubmitFailedState(
+            failedMessage:
+                "Cannot Login because user is not registered. Please Try Again"));
+      }
+    } catch (e) {
+      emit(LoginFormSubmitFailedState(failedMessage: e.toString()));
+    }
+  }
 }

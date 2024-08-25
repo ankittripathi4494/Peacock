@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/utils/routes_section.dart';
+import 'package:pecockapp/global/utils/shared_preferences_helper.dart';
 import 'package:pecockapp/modules/login/bloc/login_bloc.dart';
 import 'package:pecockapp/modules/register/bloc/register_bloc.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferencesHelper().init();
   runApp(const MyApp()); //x
 }
 

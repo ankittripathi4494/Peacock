@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/utils/utils.dart';
+import 'package:pecockapp/global/widgets/auto_schedule_task.dart';
 import 'package:pecockapp/global/widgets/form_widgets.dart';
+import 'package:pecockapp/global/widgets/toast.dart';
 import 'package:pecockapp/modules/register/bloc/register_bloc.dart';
 import 'package:pecockapp/modules/register/bloc/register_event.dart';
 import 'package:pecockapp/modules/register/bloc/register_state.dart';
@@ -46,6 +48,21 @@ class _RegisterWidgetState extends State<RegisterWidget> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
+                (state is RegisterFormSubmitSuccessState)
+                    ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
+                        Navigator.pushReplacementNamed(context, '/login');
+
+                        ToastedNotification.successToast(context,
+                            description: state.successMessage);
+                      }, taskWaitDuration: Durations.short4)
+                    : const SizedBox.shrink(),
+                (state is RegisterFormSubmitFailedState)
+                    ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
+                        Navigator.pushReplacementNamed(context, '/register');
+                        ToastedNotification.errorToast(context,
+                            description: state.failedMessage);
+                      }, taskWaitDuration: Durations.short4)
+                    : const SizedBox.shrink(),
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
