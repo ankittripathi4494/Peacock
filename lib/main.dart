@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/utils/routes_section.dart';
+import 'package:pecockapp/modules/login/bloc/login_bloc.dart';
+import 'package:pecockapp/modules/register/bloc/register_bloc.dart';
 
 void main() {
   runApp(const MyApp()); //x
@@ -18,6 +20,12 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<InternetCubit>(
           create: (context) => InternetCubit(),
+        ),
+        BlocProvider<LoginBloc>(
+          create: (context) => LoginBloc(),
+        ),
+        BlocProvider<RegisterBloc>(
+          create: (context) => RegisterBloc(),
         )
       ],
       child: const MaterialApp(

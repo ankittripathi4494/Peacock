@@ -13,7 +13,7 @@ class FormWidget {
       String? obscuringCharacter,
       Widget? suffix,
       Widget? prefix,
-      String? labelText}) {
+      String? labelText,String? errorText, Function(String)? onChanged}) {
     return TextFormField(
       enabled: enabled,
       controller: controller,
@@ -22,6 +22,7 @@ class FormWidget {
           (obscuringCharacter != null) ? obscuringCharacter : '•',
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
+      onChanged: onChanged,
       style: const TextStyle(
           color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
       decoration: InputDecoration(
@@ -32,6 +33,7 @@ class FormWidget {
         suffixIconColor: Colors.white,
         suffix: suffix,
         labelText: labelText,
+        errorText: errorText,
         labelStyle: const TextStyle(
             color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
         border: OutlineInputBorder(
@@ -48,7 +50,7 @@ class FormWidget {
             borderSide: const BorderSide(color: Colors.white, width: 2)),
         errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
-            borderSide: const BorderSide(color: Colors.white, width: 2)),
+            borderSide: const BorderSide(color: Colors.deepOrange, width: 2)),
       ),
     );
   }
