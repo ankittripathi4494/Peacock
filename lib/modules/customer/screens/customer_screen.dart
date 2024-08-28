@@ -11,19 +11,19 @@ import 'package:pecockapp/global/widgets/bottom_nav_bar.dart';
 import 'package:pecockapp/global/widgets/dialog.dart';
 import 'package:pecockapp/global/widgets/drawer.dart';
 
-class DashboardScreen extends StatefulWidget {
+class CustomerScreen extends StatefulWidget {
   late Map<String, dynamic>? argus;
-  DashboardScreen({
+  CustomerScreen({
     super.key,
     this.argus,
   });
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  State<CustomerScreen> createState() => _CustomerScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  int screenNumber = 0;
+class _CustomerScreenState extends State<CustomerScreen> {
+  int screenNumber = 1;
   @override
   Widget build(BuildContext context) {
     return BlocListener<InternetCubit, InternetState>(
@@ -71,17 +71,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   colors: [Colors.deepPurple, Colors.blue],
                   begin: Alignment.bottomLeft,
                   end: Alignment.topRight)),
-          child: Scaffold(
-             backgroundColor: Colors.transparent,
+          child:  Scaffold(
+            backgroundColor: Colors.transparent,
             appBar: AppBar(
                backgroundColor: Colors.transparent,
                systemOverlayStyle: SystemUiOverlayStyle.light,
                iconTheme: IconThemeData(color: Colors.white),
                actionsIconTheme: IconThemeData(color: Colors.white),
             ),
-           drawer: MyDrawer.getDrawerWidget(context),
+              drawer: MyDrawer.getDrawerWidget(context),
             body: Center(
-              child: Text("Dashboard Screen"),
+              child: Text("Customer Screen"),
             ),
             bottomNavigationBar: BottomNavBarWidget.bottomNavBar(
                 context, screenNumber, (d) {

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:pecockapp/modules/business/screens/business_screen.dart';
+import 'package:pecockapp/modules/customer/screens/customer_screen.dart';
 import 'package:pecockapp/modules/dashboard/screens/dashboard_screen.dart';
 import 'package:pecockapp/modules/error/screens/internet_not_found_screen.dart';
 import 'package:pecockapp/modules/error/screens/page_not_found_screen.dart';
 import 'package:pecockapp/modules/login/bloc/login_bloc.dart';
 import 'package:pecockapp/modules/login/screens/login_screen.dart';
+import 'package:pecockapp/modules/profile/screens/profile_screen.dart';
 import 'package:pecockapp/modules/register/bloc/register_bloc.dart';
 import 'package:pecockapp/modules/register/screens/register_screen.dart';
 import 'package:pecockapp/modules/splash/screens/splash_screen.dart';
@@ -15,21 +19,22 @@ class RoutesSection {
     switch (settings.name) {
       case '/':
         if (args is Map<String, dynamic>) {
-          return MaterialPageRoute(
-            builder: (context) => SplashScreen(
-              argus: args,
-            ),
-          );
+          return PageTransition(
+              type: PageTransitionType.rightToLeft,
+              child: SplashScreen(
+                argus: args,
+              ));
         }
-        return MaterialPageRoute(
-          builder: (context) => SplashScreen(
-            argus: const {},
-          ),
-        );
+        return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: SplashScreen(
+              argus: const {},
+            ));
       case '/login':
         if (args is Map<String, dynamic>) {
-          return MaterialPageRoute(
-            builder: (context) => BlocProvider(
+          return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: BlocProvider(
               create: (context) => LoginBloc(),
               child: LoginScreen(
                 argus: args,
@@ -37,8 +42,9 @@ class RoutesSection {
             ),
           );
         }
-        return MaterialPageRoute(
-          builder: (context) => BlocProvider(
+        return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: BlocProvider(
             create: (context) => LoginBloc(),
             child: LoginScreen(
               argus: const {},
@@ -47,8 +53,9 @@ class RoutesSection {
         );
       case '/register':
         if (args is Map<String, dynamic>) {
-          return MaterialPageRoute(
-            builder: (context) => BlocProvider(
+          return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: BlocProvider(
               create: (context) => RegisterBloc(),
               child: RegisterScreen(
                 argus: args,
@@ -56,37 +63,87 @@ class RoutesSection {
             ),
           );
         }
-        return MaterialPageRoute(
-          builder: (context) => BlocProvider(
+        return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child:  BlocProvider(
             create: (context) => RegisterBloc(),
             child: RegisterScreen(
               argus: const {},
             ),
           ),
         );
- case '/dashboard':
+      case '/dashboard':
         if (args is Map<String, dynamic>) {
-          return MaterialPageRoute(
-            builder: (context) => DashboardScreen(
+          return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: DashboardScreen(
               argus: args,
             ),
           );
         }
-        return MaterialPageRoute(
-          builder: (context) => DashboardScreen(
+        return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: DashboardScreen(
+            argus: const {},
+          ),
+        );
+      case '/profile':
+        if (args is Map<String, dynamic>) {
+          return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: ProfileScreen(
+              argus: args,
+            ),
+          );
+        }
+        return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: ProfileScreen(
+            argus: const {},
+          ),
+        );
+      case '/customer-list':
+        if (args is Map<String, dynamic>) {
+          return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: CustomerScreen(
+              argus: args,
+            ),
+          );
+        }
+        return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: CustomerScreen(
+            argus: const {},
+          ),
+        );
+      case '/business':
+        if (args is Map<String, dynamic>) {
+          return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: BusinessScreen(
+              argus: args,
+            ),
+          );
+        }
+        return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child:  BusinessScreen(
             argus: const {},
           ),
         );
       case '/internet-disconnect':
         if (args is Map<String, dynamic>) {
-          return MaterialPageRoute(
-            builder: (context) => InternetNotFoundScreen(
+          return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: InternetNotFoundScreen(
               argus: args,
             ),
           );
         }
-        return MaterialPageRoute(
-          builder: (context) => InternetNotFoundScreen(
+        return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: InternetNotFoundScreen(
             argus: const {},
           ),
         );
@@ -98,14 +155,16 @@ class RoutesSection {
   static Route<dynamic> errorRoute(RouteSettings settings) {
     var args = settings.arguments;
     if (args is Map<String, dynamic>) {
-      return MaterialPageRoute(
-        builder: (context) => PageNotFoundScreen(
+      return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child:  PageNotFoundScreen(
           argus: args,
         ),
       );
     }
-    return MaterialPageRoute(
-      builder: (context) => PageNotFoundScreen(
+    return PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: PageNotFoundScreen(
         argus: const {},
       ),
     );
