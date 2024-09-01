@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/utils/utils.dart';
 import 'package:pecockapp/global/widgets/auto_schedule_task.dart';
-import 'package:pecockapp/global/widgets/form_widgets.dart';
+import 'package:pecockapp/global/widgets/form_widgtes/custom_text_form_widget.dart';
 import 'package:pecockapp/global/widgets/toast.dart';
 import 'package:pecockapp/modules/register/bloc/register_bloc.dart';
 import 'package:pecockapp/modules/register/bloc/register_event.dart';
@@ -66,7 +66,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: FormWidget.textFieldFormWidget(context,
+                  child: CustomTextFormField(
                       enabled: true,
                       controller: usernameController,
                       normalIcon: Icons.person,
@@ -74,22 +74,27 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       labelText: "Username/E-Mail",
                       errorText: (state is RegisterFormInvalidState)
                           ? state.usernameError
-                          : null, onChanged: (p0) {
-                    BlocProvider.of<RegisterBloc>(context).add(
-                        RegisterTextChangedEvent(
-                            usernameText: usernameController.text,
-                            passwordText: passwordController.text,
-                            confirmPasswordText: confirmPasswordController.text,
-                            selectedGender: selectedGender,
-                            selectedMarriageStatus: selectedMarriageStatus));
-                  }, inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9.@]'))
-                  ]),
+                          : null,
+                      onChanged: (p0) {
+                        BlocProvider.of<RegisterBloc>(context).add(
+                            RegisterTextChangedEvent(
+                                usernameText: usernameController.text,
+                                passwordText: passwordController.text,
+                                confirmPasswordText:
+                                    confirmPasswordController.text,
+                                selectedGender: selectedGender,
+                                selectedMarriageStatus:
+                                    selectedMarriageStatus));
+                      },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[A-Za-z0-9.@]'))
+                      ]),
                 ),
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: FormWidget.textFieldFormWidget(context,
+                  child: CustomTextFormField(
                       enabled: true,
                       obscureText: !showPassword,
                       obscuringCharacter: '#',
@@ -99,15 +104,18 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       errorText: (state is RegisterFormInvalidState)
                           ? state.passwordError
                           : null,
-                      normalIcon: Icons.lock_clock, onChanged: (p0) {
-                    BlocProvider.of<RegisterBloc>(context).add(
-                        RegisterTextChangedEvent(
-                            usernameText: usernameController.text,
-                            passwordText: passwordController.text,
-                            confirmPasswordText: confirmPasswordController.text,
-                            selectedGender: selectedGender,
-                            selectedMarriageStatus: selectedMarriageStatus));
-                  },
+                      normalIcon: Icons.lock_clock,
+                      onChanged: (p0) {
+                        BlocProvider.of<RegisterBloc>(context).add(
+                            RegisterTextChangedEvent(
+                                usernameText: usernameController.text,
+                                passwordText: passwordController.text,
+                                confirmPasswordText:
+                                    confirmPasswordController.text,
+                                selectedGender: selectedGender,
+                                selectedMarriageStatus:
+                                    selectedMarriageStatus));
+                      },
                       suffix: InkWell(
                         onTap: () {
                           setState(() {
@@ -130,7 +138,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: FormWidget.textFieldFormWidget(context,
+                  child: CustomTextFormField(
                       enabled: true,
                       obscureText: !showConfirmPassword,
                       obscuringCharacter: '#',
@@ -140,15 +148,18 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       errorText: (state is RegisterFormInvalidState)
                           ? state.confirmPasswordError
                           : null,
-                      normalIcon: Icons.lock_clock, onChanged: (p0) {
-                    BlocProvider.of<RegisterBloc>(context).add(
-                        RegisterTextChangedEvent(
-                            usernameText: usernameController.text,
-                            passwordText: passwordController.text,
-                            confirmPasswordText: confirmPasswordController.text,
-                            selectedGender: selectedGender,
-                            selectedMarriageStatus: selectedMarriageStatus));
-                  },
+                      normalIcon: Icons.lock_clock,
+                      onChanged: (p0) {
+                        BlocProvider.of<RegisterBloc>(context).add(
+                            RegisterTextChangedEvent(
+                                usernameText: usernameController.text,
+                                passwordText: passwordController.text,
+                                confirmPasswordText:
+                                    confirmPasswordController.text,
+                                selectedGender: selectedGender,
+                                selectedMarriageStatus:
+                                    selectedMarriageStatus));
+                      },
                       suffix: InkWell(
                         onTap: () {
                           setState(() {

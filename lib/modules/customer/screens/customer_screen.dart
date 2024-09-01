@@ -3,13 +3,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/blocs/internet/internet_state.dart';
+import 'package:pecockapp/global/widgets/app_bar_widget.dart';
 import 'package:pecockapp/global/widgets/bottom_nav_bar.dart';
 import 'package:pecockapp/global/widgets/dialog.dart';
 import 'package:pecockapp/global/widgets/drawer.dart';
+import 'package:pecockapp/modules/customer/widgets/customer_list_widget.dart';
 
 class CustomerScreen extends StatefulWidget {
   late Map<String, dynamic>? argus;
@@ -71,33 +72,46 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   colors: [Colors.deepPurple, Colors.blue],
                   begin: Alignment.bottomLeft,
                   end: Alignment.topRight)),
-          child:  Scaffold(
+          child: Scaffold(
             backgroundColor: Colors.transparent,
-            appBar: AppBar(
-               backgroundColor: Colors.transparent,
-               systemOverlayStyle: SystemUiOverlayStyle.light,
-               iconTheme: IconThemeData(color: Colors.white),
-               actionsIconTheme: IconThemeData(color: Colors.white),
-            ),
-              drawer: MyDrawer.getDrawerWidget(context),
-            body: Center(
-              child: Text("Customer Screen"),
-            ),
-            bottomNavigationBar: BottomNavBarWidget.bottomNavBar(
-                context, screenNumber, (d) {
-                   setState(() {
-                    screenNumber=d;
-                  });
-                  if (screenNumber==0) {
-                    Navigator.pushReplacementNamed(context, '/dashboard');
-                  } else if (screenNumber==1) {
-                    Navigator.pushReplacementNamed(context, '/customer-list');
-                  } else if (screenNumber==2) {
-                    Navigator.pushReplacementNamed(context, '/business');
-                  } else if (screenNumber==3) {
-                    Navigator.pushReplacementNamed(context, '/profile');
-                  }
-                }),
+            appBar: AppBarWidget.appBarWidgetMethod(context,
+                title: const Text(
+                  "Customer List",
+                  style: TextStyle(color: Colors.white),
+                ),
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/add-customer');
+                      },
+                      icon: const Icon(
+                        Icons.person_add,
+                        size: 30,
+                      )),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                ]),
+            drawer: MyDrawer.getDrawerWidget(context),
+            body: Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: const CustomerListWidget()),
+            bottomNavigationBar:
+                BottomNavBarWidget.bottomNavBar(context, screenNumber, (d) {
+              setState(() {
+                screenNumber = d;
+              });
+              if (screenNumber == 0) {
+                Navigator.pushReplacementNamed(context, '/dashboard');
+              } else if (screenNumber == 1) {
+                Navigator.pushReplacementNamed(context, '/customer-list');
+              } else if (screenNumber == 2) {
+                Navigator.pushReplacementNamed(context, '/business');
+              } else if (screenNumber == 3) {
+                Navigator.pushReplacementNamed(context, '/profile');
+              }
+            }),
           ),
         ),
       ),

@@ -3,10 +3,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/blocs/internet/internet_state.dart';
+import 'package:pecockapp/global/widgets/app_bar_widget.dart';
 import 'package:pecockapp/global/widgets/bottom_nav_bar.dart';
 import 'package:pecockapp/global/widgets/dialog.dart';
 import 'package:pecockapp/global/widgets/drawer.dart';
@@ -73,14 +73,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   end: Alignment.topRight)),
           child: Scaffold(
             backgroundColor: Colors.transparent,
-            appBar: AppBar(
-               backgroundColor: Colors.transparent,
-               systemOverlayStyle: SystemUiOverlayStyle.light,
-               iconTheme: IconThemeData(color: Colors.white),
-               actionsIconTheme: IconThemeData(color: Colors.white),
-            ),
+              appBar: AppBarWidget.appBarWidgetMethod(context),
             drawer: MyDrawer.getDrawerWidget(context),
-            body: Center(
+            body: const Center(
               child: Text("Profile Screen"),
             ),
             bottomNavigationBar:

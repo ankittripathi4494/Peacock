@@ -3,10 +3,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/blocs/internet/internet_state.dart';
+import 'package:pecockapp/global/widgets/app_bar_widget.dart';
 import 'package:pecockapp/global/widgets/bottom_nav_bar.dart';
 import 'package:pecockapp/global/widgets/dialog.dart';
 import 'package:pecockapp/global/widgets/drawer.dart';
@@ -72,32 +72,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   begin: Alignment.bottomLeft,
                   end: Alignment.topRight)),
           child: Scaffold(
-             backgroundColor: Colors.transparent,
-            appBar: AppBar(
-               backgroundColor: Colors.transparent,
-               systemOverlayStyle: SystemUiOverlayStyle.light,
-               iconTheme: IconThemeData(color: Colors.white),
-               actionsIconTheme: IconThemeData(color: Colors.white),
-            ),
-           drawer: MyDrawer.getDrawerWidget(context),
-            body: Center(
+            backgroundColor: Colors.transparent,
+            appBar: AppBarWidget.appBarWidgetMethod(context,
+                title: const Text(
+                  "Dashboard Screen",
+                  style: TextStyle(color: Colors.white),
+                )),
+            drawer: MyDrawer.getDrawerWidget(context),
+            body: const Center(
               child: Text("Dashboard Screen"),
             ),
-            bottomNavigationBar: BottomNavBarWidget.bottomNavBar(
-                context, screenNumber, (d) {
-                   setState(() {
-                    screenNumber=d;
-                  });
-                  if (screenNumber==0) {
-                    Navigator.pushReplacementNamed(context, '/dashboard');
-                  } else if (screenNumber==1) {
-                    Navigator.pushReplacementNamed(context, '/customer-list');
-                  } else if (screenNumber==2) {
-                    Navigator.pushReplacementNamed(context, '/business');
-                  } else if (screenNumber==3) {
-                    Navigator.pushReplacementNamed(context, '/profile');
-                  }
-                }),
+            bottomNavigationBar:
+                BottomNavBarWidget.bottomNavBar(context, screenNumber, (d) {
+              setState(() {
+                screenNumber = d;
+              });
+              if (screenNumber == 0) {
+                Navigator.pushReplacementNamed(context, '/dashboard');
+              } else if (screenNumber == 1) {
+                Navigator.pushReplacementNamed(context, '/customer-list');
+              } else if (screenNumber == 2) {
+                Navigator.pushReplacementNamed(context, '/business');
+              } else if (screenNumber == 3) {
+                Navigator.pushReplacementNamed(context, '/profile');
+              }
+            }),
           ),
         ),
       ),

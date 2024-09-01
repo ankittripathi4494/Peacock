@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pecockapp/modules/business/screens/business_screen.dart';
+import 'package:pecockapp/modules/customer/screens/add_customer_screen.dart';
 import 'package:pecockapp/modules/customer/screens/customer_screen.dart';
 import 'package:pecockapp/modules/dashboard/screens/dashboard_screen.dart';
 import 'package:pecockapp/modules/error/screens/internet_not_found_screen.dart';
@@ -20,20 +21,23 @@ class RoutesSection {
       case '/':
         if (args is Map<String, dynamic>) {
           return PageTransition(
-              type: PageTransitionType.rightToLeft,
+              duration: Durations.medium4,
+              type: PageTransitionType.fade,
               child: SplashScreen(
                 argus: args,
               ));
         }
         return PageTransition(
-            type: PageTransitionType.rightToLeft,
+            duration: Durations.medium4,
+            type: PageTransitionType.fade,
             child: SplashScreen(
               argus: const {},
             ));
       case '/login':
         if (args is Map<String, dynamic>) {
           return PageTransition(
-            type: PageTransitionType.rightToLeft,
+            duration: Durations.medium4,
+            type: PageTransitionType.fade,
             child: BlocProvider(
               create: (context) => LoginBloc(),
               child: LoginScreen(
@@ -43,8 +47,9 @@ class RoutesSection {
           );
         }
         return PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child: BlocProvider(
+          duration: Durations.medium4,
+          type: PageTransitionType.fade,
+          child: BlocProvider(
             create: (context) => LoginBloc(),
             child: LoginScreen(
               argus: const {},
@@ -54,7 +59,8 @@ class RoutesSection {
       case '/register':
         if (args is Map<String, dynamic>) {
           return PageTransition(
-            type: PageTransitionType.rightToLeft,
+            duration: Durations.medium4,
+            type: PageTransitionType.fade,
             child: BlocProvider(
               create: (context) => RegisterBloc(),
               child: RegisterScreen(
@@ -64,8 +70,9 @@ class RoutesSection {
           );
         }
         return PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child:  BlocProvider(
+          duration: Durations.medium4,
+          type: PageTransitionType.fade,
+          child: BlocProvider(
             create: (context) => RegisterBloc(),
             child: RegisterScreen(
               argus: const {},
@@ -75,75 +82,102 @@ class RoutesSection {
       case '/dashboard':
         if (args is Map<String, dynamic>) {
           return PageTransition(
-            type: PageTransitionType.rightToLeft,
+            duration: Durations.medium4,
+            type: PageTransitionType.fade,
             child: DashboardScreen(
               argus: args,
             ),
           );
         }
         return PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child: DashboardScreen(
+          duration: Durations.medium4,
+          type: PageTransitionType.fade,
+          child: DashboardScreen(
             argus: const {},
           ),
         );
       case '/profile':
         if (args is Map<String, dynamic>) {
           return PageTransition(
-            type: PageTransitionType.rightToLeft,
+            duration: Durations.medium4,
+            type: PageTransitionType.fade,
             child: ProfileScreen(
               argus: args,
             ),
           );
         }
         return PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child: ProfileScreen(
+          duration: Durations.medium4,
+          type: PageTransitionType.fade,
+          child: ProfileScreen(
             argus: const {},
           ),
         );
       case '/customer-list':
         if (args is Map<String, dynamic>) {
           return PageTransition(
-            type: PageTransitionType.rightToLeft,
+            duration: Durations.medium4,
+            type: PageTransitionType.fade,
             child: CustomerScreen(
               argus: args,
             ),
           );
         }
         return PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child: CustomerScreen(
+          duration: Durations.medium4,
+          type: PageTransitionType.fade,
+          child: CustomerScreen(
+            argus: const {},
+          ),
+        );
+      case '/add-customer':
+        if (args is Map<String, dynamic>) {
+          return PageTransition(
+            duration: Durations.medium4,
+            type: PageTransitionType.fade,
+            child: AddCustomerScreen(
+              argus: args,
+            ),
+          );
+        }
+        return PageTransition(
+          duration: Durations.medium4,
+          type: PageTransitionType.fade,
+          child: AddCustomerScreen(
             argus: const {},
           ),
         );
       case '/business':
         if (args is Map<String, dynamic>) {
           return PageTransition(
-            type: PageTransitionType.rightToLeft,
+            duration: Durations.medium4,
+            type: PageTransitionType.fade,
             child: BusinessScreen(
               argus: args,
             ),
           );
         }
         return PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child:  BusinessScreen(
+          duration: Durations.medium4,
+          type: PageTransitionType.fade,
+          child: BusinessScreen(
             argus: const {},
           ),
         );
       case '/internet-disconnect':
         if (args is Map<String, dynamic>) {
           return PageTransition(
-            type: PageTransitionType.rightToLeft,
+            duration: Durations.medium4,
+            type: PageTransitionType.fade,
             child: InternetNotFoundScreen(
               argus: args,
             ),
           );
         }
         return PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child: InternetNotFoundScreen(
+          duration: Durations.medium4,
+          type: PageTransitionType.fade,
+          child: InternetNotFoundScreen(
             argus: const {},
           ),
         );
@@ -156,15 +190,17 @@ class RoutesSection {
     var args = settings.arguments;
     if (args is Map<String, dynamic>) {
       return PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child:  PageNotFoundScreen(
+        duration: Durations.medium4,
+        type: PageTransitionType.fade,
+        child: PageNotFoundScreen(
           argus: args,
         ),
       );
     }
     return PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child: PageNotFoundScreen(
+      duration: Durations.medium4,
+      type: PageTransitionType.fade,
+      child: PageNotFoundScreen(
         argus: const {},
       ),
     );

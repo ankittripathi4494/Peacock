@@ -76,8 +76,8 @@ class _BusinessScreenState extends State<BusinessScreen> {
             appBar: AppBar(
                backgroundColor: Colors.transparent,
                systemOverlayStyle: SystemUiOverlayStyle.light,
-               iconTheme: IconThemeData(color: Colors.white),
-               actionsIconTheme: IconThemeData(color: Colors.white),
+               iconTheme: const IconThemeData(color: Colors.white),
+               actionsIconTheme: const IconThemeData(color: Colors.white),
             ),
               drawer: MyDrawer.getDrawerWidget(context),
             body: const Center(

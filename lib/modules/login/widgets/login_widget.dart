@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/utils/utils.dart';
 import 'package:pecockapp/global/widgets/auto_schedule_task.dart';
-import 'package:pecockapp/global/widgets/form_widgets.dart';
+import 'package:pecockapp/global/widgets/form_widgtes/custom_text_form_widget.dart';
 import 'package:pecockapp/global/widgets/toast.dart';
 import 'package:pecockapp/modules/login/bloc/login_bloc.dart';
 import 'package:pecockapp/modules/login/bloc/login_event.dart';
@@ -60,7 +60,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: FormWidget.textFieldFormWidget(context,
+                  child: CustomTextFormField(
                       enabled: true,
                       controller: usernameController,
                       normalIcon: Icons.person,
@@ -68,19 +68,22 @@ class _LoginWidgetState extends State<LoginWidget> {
                       labelText: "Username/E-Mail",
                       errorText: (state is LoginFormInvalidState)
                           ? state.usernameError
-                          : null, onChanged: (value) {
-                    BlocProvider.of<LoginBloc>(context).add(
-                        LoginTextChangedEvent(
-                            usernameText: usernameController.text,
-                            passwordText: passwordController.text));
-                  }, inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9.@]'))
-                  ]),
+                          : null,
+                      onChanged: (value) {
+                        BlocProvider.of<LoginBloc>(context).add(
+                            LoginTextChangedEvent(
+                                usernameText: usernameController.text,
+                                passwordText: passwordController.text));
+                      },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[A-Za-z0-9.@]'))
+                      ]),
                 ),
                 Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: FormWidget.textFieldFormWidget(context,
+                  child: CustomTextFormField(
                       enabled: true,
                       obscureText: !showPassword,
                       obscuringCharacter: '#',
