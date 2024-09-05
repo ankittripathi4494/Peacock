@@ -62,6 +62,7 @@ class DatabaseHelper {
         city TEXT,
         state TEXT,
         country TEXT,
+        dob TEXT,
         status INTEGER
       )
     ''');

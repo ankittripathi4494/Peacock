@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/utils/routes_section.dart';
 import 'package:pecockapp/global/utils/shared_preferences_helper.dart';
+import 'package:pecockapp/modules/customer/bloc/customer_bloc.dart';
 import 'package:pecockapp/modules/login/bloc/login_bloc.dart';
 import 'package:pecockapp/modules/register/bloc/register_bloc.dart';
 
@@ -34,6 +35,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<RegisterBloc>(
           create: (context) => RegisterBloc(),
+        ),
+        BlocProvider<CustomerBloc>(
+          create: (context) => CustomerBloc(),
         )
       ],
       child: const MaterialApp(

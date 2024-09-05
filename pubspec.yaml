@@ -45,6 +45,7 @@ dependencies:
   talker: ^4.4.1
   sqflite: ^2.3.3+1
   page_transition: ^2.1.0
+  loading_indicator: ^3.1.1
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,8 @@
 mixin ApiList {
-  static String mainDomain = "64.227.150.208";
-  static String apiSubFolder = "khatabook/api";
-  static String splashLogo = "${apiSubFolder}getSingleEMIRecurringDetails";
+  static String mainDomain = "dashapp.financepe.in";
+  static String apiSubFolder = "/masterApi/";
+  static String countryListAPI = "${apiSubFolder}countryList";
+  static String stateListAPI = "${apiSubFolder}stateList";
+  static String cityListAPI = "${apiSubFolder}cityList";
   
 }

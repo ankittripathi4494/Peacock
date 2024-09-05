@@ -17,9 +17,19 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
     return ListView.builder(
       itemCount: 1000,
       itemBuilder: (context, index) {
-        return ListTile(
-          textColor: Colors.white,
-          title: Text("Hello ${index + 1}"),
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.white),
+            borderRadius: BorderRadius.circular(20)
+          ),
+          child: ListTile(
+            onTap: () {
+              Navigator.pushNamed(context, '/edit-customer');
+            },
+            textColor: Colors.white,
+            title: Text("Hello ${index + 1}"),
+          ),
         );
       },
     );

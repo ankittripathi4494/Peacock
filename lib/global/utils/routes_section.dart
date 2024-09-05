@@ -4,6 +4,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:pecockapp/modules/business/screens/business_screen.dart';
 import 'package:pecockapp/modules/customer/screens/add_customer_screen.dart';
 import 'package:pecockapp/modules/customer/screens/customer_screen.dart';
+import 'package:pecockapp/modules/customer/screens/edit_customer_screen.dart';
 import 'package:pecockapp/modules/dashboard/screens/dashboard_screen.dart';
 import 'package:pecockapp/modules/error/screens/internet_not_found_screen.dart';
 import 'package:pecockapp/modules/error/screens/page_not_found_screen.dart';
@@ -144,6 +145,23 @@ class RoutesSection {
           duration: Durations.medium4,
           type: PageTransitionType.fade,
           child: AddCustomerScreen(
+            argus: const {},
+          ),
+        );
+      case '/edit-customer':
+        if (args is Map<String, dynamic>) {
+          return PageTransition(
+            duration: Durations.medium4,
+            type: PageTransitionType.fade,
+            child: EditCustomerScreen(
+              argus: args,
+            ),
+          );
+        }
+        return PageTransition(
+          duration: Durations.medium4,
+          type: PageTransitionType.fade,
+          child: EditCustomerScreen(
             argus: const {},
           ),
         );

@@ -21,10 +21,17 @@ class CustomRadioButtons<T> extends StatelessWidget {
       child: Row(
         children: items
             .map((item) => RadioMenuButton<T>(
+                  style: const ButtonStyle(
+                      foregroundColor: WidgetStatePropertyAll(Colors.white),
+                      iconColor: WidgetStatePropertyAll(Colors.white),
+                      textStyle: WidgetStatePropertyAll(
+                          TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold))),
                   value: item,
                   groupValue: selectedValue,
                   onChanged: onChanged,
-                  child: Text(getTitle(item)), // Use the callback to get the title
+                  child: Text(
+                    getTitle(item),
+                  ), // Use the callback to get the title
                 ))
             .toList(),
       ),
