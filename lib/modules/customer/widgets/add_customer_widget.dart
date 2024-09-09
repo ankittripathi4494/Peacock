@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
+// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -67,229 +67,225 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-        child: SingleChildScrollView(
-      child: Column(
-        children: [
-          BlocBuilder<CustomerBloc, CustomerState>(
-            builder: (context, state) {
-              if (state is CustomerCountryLoadedState) {
-                return AutoScheduleTaskWidget.taskScheduler(context,
-                    task: () {
-                  setState(() {
-                    countryList = state.countryResponseData;
-                  });
-                   print(state.countryResponseData);
-                }, taskWaitDuration: Durations.short4);
-              }
-              if (state is CustomerStateLoadedState) {
-                return AutoScheduleTaskWidget.taskScheduler(context,
-                    task: () {
-                  setState(() {
-                    stateList = state.stateResponseData;
-                  });
-                  print(state.stateResponseData);
-                }, taskWaitDuration: Durations.short4);
-              }
-          if (state is CustomerCityLoadedState) {
-                return AutoScheduleTaskWidget.taskScheduler(context,
-                    task: () {
-                  setState(() {
-                    cityList = state.cityResponseData;
-                  });
-                }, taskWaitDuration: Durations.short4);
-              }
-              return const SizedBox.shrink();
-            },
-          ),
-          
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            child: CustomTextFormField(
-              controller: customerNameController,
-              keyboardType: TextInputType.name,
-              labelText: "Customer Name",
-              normalIcon: Icons.person,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]'))
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            child: CustomTextFormField(
-              controller: customerEmailController,
-              keyboardType: TextInputType.emailAddress,
-              labelText: "Customer E-Mail",
-              normalIcon: Icons.person,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@. ]'))
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            child: CustomTextFormField(
-              controller: customerPhoneController,
-              keyboardType: TextInputType.phone,
-              maxLength: 10,
-              labelText: "Customer Phone",
-              normalIcon: Icons.phone,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            child: ListTile(
-              title: const Text(
-                "Select Gender",
-                style: TextStyle(
-                  color: Colors.white,
+    return BlocBuilder<CustomerBloc, CustomerState>(
+      builder: (context, state) {
+        return Form(
+            child: SingleChildScrollView(
+          child: Column(
+            children: [
+              (state is CustomerCountryLoadedState)
+                  ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
+                      setState(() {
+                        countryList = state.countryResponseData;
+                      });
+                      print(state.countryResponseData);
+                    }, taskWaitDuration: Durations.short4)
+                  : const SizedBox.shrink(),
+              (state is CustomerStateLoadedState)
+                  ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
+                      setState(() {
+                        stateList = state.stateResponseData;
+                      });
+                      print(state.stateResponseData);
+                    }, taskWaitDuration: Durations.short4)
+                  : const SizedBox.shrink(),
+              (state is CustomerCityLoadedState)
+                  ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
+                      setState(() {
+                        cityList = state.cityResponseData;
+                      });
+                    }, taskWaitDuration: Durations.short4)
+                  : const SizedBox.shrink(),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: CustomTextFormField(
+                  controller: customerNameController,
+                  keyboardType: TextInputType.name,
+                  labelText: "Customer Name",
+                  normalIcon: Icons.person,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]'))
+                  ],
                 ),
               ),
-              subtitle: CustomDropdown(
-                  items: genderList,
-                  hint: "Select Gender",
-                  selectedValue: selectedGender,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedGender = value;
-                    });
-                  },
-                  getTitle: (item) => item['title']),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            child: ListTile(
-              title: const Text(
-                "Select Marriage Status",
-                style: TextStyle(
-                  color: Colors.white,
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: CustomTextFormField(
+                  controller: customerEmailController,
+                  keyboardType: TextInputType.emailAddress,
+                  labelText: "Customer E-Mail",
+                  normalIcon: Icons.person,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@. ]'))
+                  ],
                 ),
               ),
-              subtitle: CustomRadioButtons(
-                  items: marriageStatusList,
-                  selectedValue: selectedMarriageStatus,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedMarriageStatus = value;
-                    });
-                  },
-                  getTitle: (item) => item['title']),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            child: CustomTextFormField(
-              prefix: const Icon(
-                Icons.calendar_month,
-                size: 50,
-                color: Colors.white,
-              ),
-              controller: customerDobController,
-              enabled: false,
-              labelText: "Select DOB",
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            child: ListTile(
-              title: const Text(
-                "Select Country",
-                style: TextStyle(
-                  color: Colors.white,
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: CustomTextFormField(
+                  controller: customerPhoneController,
+                  keyboardType: TextInputType.phone,
+                  maxLength: 10,
+                  labelText: "Customer Phone",
+                  normalIcon: Icons.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+                  ],
                 ),
               ),
-              subtitle: CustomDropdown(
-                  items: countryList!,
-                  hint: "Select Country",
-                  selectedValue: selectedCountry,
-                  onChanged: (value) {
-                    setState(() {
-                      stateList = [];
-                      selectedState = null;
-                      cityList = [];
-                      selectedCity = null;
-                      selectedCountry = value;
-                    });
-                    fetchState(selectedCountry: value);
-                  },
-                  getTitle: (item) => item.name!),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            child: ListTile(
-              title: const Text(
-                "Select State",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              subtitle: CustomDropdown(
-                  items: stateList!,
-                  hint: "Select State",
-                  selectedValue: selectedState,
-                  onChanged: (value) {
-                    setState(() {
-                      cityList = [];
-                      selectedCity = null;
-                      selectedState = value;
-                    });
-                    fetchCity(
-                        selectedState: value, selectedCountry: selectedCountry);
-                  },
-                  getTitle: (item) => item.name!),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            child: ListTile(
-              title: const Text(
-                "Select City",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              subtitle: CustomDropdown(
-                  items: cityList!,
-                  hint: "Select City",
-                  selectedValue: selectedCity,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedCity = value;
-                    });
-                  },
-                  getTitle: (item) => item.name!),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            child: InkWell(
-              onTap: () {},
-              child: Container(
-                width: context.screenWidth,
-                height: 50,
-                decoration: const BoxDecoration(
-                  color: Colors.deepOrange,
-                ),
-                child: const Center(
-                  child: Text(
-                    "Add Customer",
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: ListTile(
+                  title: const Text(
+                    "Select Gender",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
+                      color: Colors.white,
+                    ),
+                  ),
+                  subtitle: CustomDropdown(
+                      items: genderList,
+                      hint: "Select Gender",
+                      selectedValue: selectedGender,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedGender = value;
+                        });
+                      },
+                      getTitle: (item) => item['title']),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: ListTile(
+                  title: const Text(
+                    "Select Marriage Status",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  subtitle: CustomRadioButtons(
+                      items: marriageStatusList,
+                      selectedValue: selectedMarriageStatus,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedMarriageStatus = value;
+                        });
+                      },
+                      getTitle: (item) => item['title']),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: CustomTextFormField(
+                  prefix: const Icon(
+                    Icons.calendar_month,
+                    size: 50,
+                    color: Colors.white,
+                  ),
+                  controller: customerDobController,
+                  enabled: false,
+                  labelText: "Select DOB",
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: ListTile(
+                  title: const Text(
+                    "Select Country",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  subtitle: CustomDropdown(
+                      items: countryList!,
+                      hint: "Select Country",
+                      selectedValue: selectedCountry,
+                      onChanged: (value) {
+                        setState(() {
+                          stateList = [];
+                          selectedState = null;
+                          cityList = [];
+                          selectedCity = null;
+                          selectedCountry = value;
+                        });
+                        fetchState(selectedCountry: value);
+                      },
+                      getTitle: (item) => item.name!),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: ListTile(
+                  title: const Text(
+                    "Select State",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  subtitle: CustomDropdown(
+                      items: stateList!,
+                      hint: "Select State",
+                      selectedValue: selectedState,
+                      onChanged: (value) {
+                        setState(() {
+                          cityList = [];
+                          selectedCity = null;
+                          selectedState = value;
+                        });
+                        fetchCity(
+                            selectedState: value,
+                            selectedCountry: selectedCountry);
+                      },
+                      getTitle: (item) => item.name!),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: ListTile(
+                  title: const Text(
+                    "Select City",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  subtitle: CustomDropdown(
+                      items: cityList!,
+                      hint: "Select City",
+                      selectedValue: selectedCity,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCity = value;
+                        });
+                      },
+                      getTitle: (item) => item.name!),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: InkWell(
+                  onTap: () {},
+                  child: Container(
+                    width: context.screenWidth,
+                    height: 50,
+                    decoration: const BoxDecoration(
+                      color: Colors.deepOrange,
+                    ),
+                    child: const Center(
+                      child: Text(
+                        "Add Customer",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          )
-        ],
-      ),
-    ));
+              )
+            ],
+          ),
+        ));
+      },
+    );
   }
 }
