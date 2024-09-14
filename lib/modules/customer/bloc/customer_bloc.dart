@@ -29,14 +29,20 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
         (event.customerPhone.isEmpty) &&
         (event.customerGender == null) &&
         (event.customerMarriageStatus == null) &&
-        (event.customerDob == null)) {
+        (event.customerDob == null) &&
+        (event.selectedCountry == null) &&
+        (event.selectedState == null) &&
+        (event.selectedCity == null)) {
       emit(CustomerFormInvalidState(
           customerName: 'Please Enter Customer Name',
           customerEmail: 'Please Enter Customer E-Mail',
           customerPhone: 'Please Enter Customer Phone',
           customerGender: 'Please select Customer Gender',
           customerMarriageStatus: 'Please select Customer Marriage Status',
-          customerdob: "Please select customer date of birth and time"));
+          customerdob: "Please select customer date of birth and time",
+          countryError: "Please Select country",
+          stateError: "Please select state",
+          cityError: "Please select city"));
     } else if ((event.customerName.isNotEmpty) &&
         (event.customerEmail.isNotEmpty) &&
         (event.customerPhone.isNotEmpty) &&
@@ -52,9 +58,9 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
               : null,
           customerEmail: (event.customerEmail.isEmpty)
               ? 'Please Enter Customer E-Mail'
-              : (!event.customerName.isValidEmail()
-                  ? 'Please Enter Correct E-Mail'
-                  : null),
+              : (event.customerEmail.isValidEmail()
+                  ? null
+                  : 'Please Enter Correct E-Mail'),
           customerPhone: (event.customerPhone.isEmpty)
               ? 'Please Enter Confirm Password'
               : ((event.customerPhone.isValidContact())
@@ -65,9 +71,15 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
           customerMarriageStatus: (event.customerMarriageStatus == null)
               ? 'Please select Marriage Status'
               : null,
-          customerdob: (event.customerMarriageStatus == null)
+          customerdob: (event.customerDob == null)
               ? 'Please select Date of Birth'
-              : null));
+              : null,
+          countryError:
+              (event.selectedCountry == null) ? "Please Select country" : null,
+          stateError:
+              (event.selectedState == null) ? "Please select state" : null,
+          cityError:
+              (event.selectedCountry == null) ? "Please select city" : null));
     }
   }
 
@@ -146,7 +158,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
 
   _customerCityFetchMethod(
       CustomerCityFetchEvent event, Emitter<CustomerState> emit) async {
-         try {
+    try {
       var map = {};
       map['search'] = '';
       map['country_id'] = event.countryResponseData?.id;
@@ -179,5 +191,5 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       LoggerUtil().errorData("Error := ${e.toString()}");
       emit(CustomerCityLoadingFailedState(errorMessage: e.toString()));
     }
-      }
+  }
 }

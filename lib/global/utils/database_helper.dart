@@ -59,9 +59,9 @@ class DatabaseHelper {
         gender INTEGER, 
         marriage_status INTEGER, 
         address TEXT,
-        city TEXT,
-        state TEXT,
-        country TEXT,
+        city_id INTEGER,
+        state_id INTEGER,
+        country_id INTEGER,
         dob TEXT,
         status INTEGER
       )

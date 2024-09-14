@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:pecockapp/modules/customer/model/city_response_model.dart';
 import 'package:pecockapp/modules/customer/model/country_response_model.dart';
 import 'package:pecockapp/modules/customer/model/state_response_model.dart';
 
@@ -12,14 +13,21 @@ class CustomerTextChangeEvent extends CustomerEvent {
   late Map<String, dynamic>? customerGender;
   late Map<String, dynamic>? customerMarriageStatus;
    late DateTime? customerDob;
+  late CountryResponseData? selectedCountry;
+  late StateResponseData? selectedState;
+  late CityResponseData? selectedCity;
   CustomerTextChangeEvent({
     required this.customerName,
     required this.customerEmail,
     required this.customerPhone,
     required this.customerGender,
     required this.customerMarriageStatus,
-    required this.customerDob
+    required this.customerDob,
+    required this.selectedCountry,
+    required this.selectedState,
+    required this.selectedCity,
   });
+  
 }
 //! Event 2
 class AddCustomerEvent extends CustomerEvent {
@@ -29,13 +37,19 @@ class AddCustomerEvent extends CustomerEvent {
   late Map<String, dynamic>? customerGender;
   late Map<String, dynamic>? customerMarriageStatus;
   late DateTime? customerDob;
+  late CountryResponseData? selectedCountry;
+  late StateResponseData? selectedState;
+  late CityResponseData? selectedCity;
   AddCustomerEvent({
     required this.customerName,
     required this.customerEmail,
     required this.customerPhone,
     required this.customerGender,
     required this.customerMarriageStatus,
-    required this.customerDob
+    required this.customerDob,
+    required this.selectedCountry,
+    required this.selectedState,
+    required this.selectedCity,
   });
 }
 //! Event 3
@@ -47,6 +61,9 @@ class EditCustomerEvent extends CustomerEvent {
   late String customerGender;
   late String customerMarriageStatus;
   late DateTime? customerDob;
+    late CountryResponseData? selectedCountry;
+  late StateResponseData? selectedState;
+  late CityResponseData? selectedCity;
   EditCustomerEvent({
     required this.customerId,
     required this.customerName,
@@ -54,7 +71,10 @@ class EditCustomerEvent extends CustomerEvent {
     required this.customerPhone,
     required this.customerGender,
     required this.customerMarriageStatus,
-    required this.customerDob
+    required this.customerDob,
+    required this.selectedCountry,
+    required this.selectedState,
+    required this.selectedCity,
   });
 }
 //! Event 4

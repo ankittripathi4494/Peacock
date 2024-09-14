@@ -25,6 +25,7 @@ class CustomDropdown<T> extends StatelessWidget {
       isExpanded: true,
       decoration: InputDecoration(
         errorText: errorText,
+        errorStyle: const TextStyle(color: Colors.deepOrange),
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
         border: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.white),

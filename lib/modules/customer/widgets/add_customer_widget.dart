@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:pecockapp/global/utils/logger_util.dart';
 import 'package:pecockapp/global/utils/utils.dart';
 import 'package:pecockapp/global/widgets/auto_schedule_task.dart';
 import 'package:pecockapp/global/widgets/form_widgtes/custom_dropdown_form_widget.dart';
@@ -78,7 +80,9 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                       setState(() {
                         countryList = state.countryResponseData;
                       });
-                      print(state.countryResponseData);
+
+                      LoggerUtil()
+                          .debugData("Country:- ${state.countryResponseData}");
                     }, taskWaitDuration: Durations.short4)
                   : const SizedBox.shrink(),
               (state is CustomerStateLoadedState)
@@ -86,7 +90,9 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                       setState(() {
                         stateList = state.stateResponseData;
                       });
-                      print(state.stateResponseData);
+
+                      LoggerUtil()
+                          .debugData("State:- ${state.stateResponseData}");
                     }, taskWaitDuration: Durations.short4)
                   : const SizedBox.shrink(),
               (state is CustomerCityLoadedState)
@@ -94,6 +100,9 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                       setState(() {
                         cityList = state.cityResponseData;
                       });
+
+                      LoggerUtil()
+                          .debugData("City:- ${state.cityResponseData}");
                     }, taskWaitDuration: Durations.short4)
                   : const SizedBox.shrink(),
               Container(
@@ -103,6 +112,22 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                   keyboardType: TextInputType.name,
                   labelText: "Customer Name",
                   normalIcon: Icons.person,
+                  onChanged: (value) {
+                    BlocProvider.of<CustomerBloc>(context).add(
+                        CustomerTextChangeEvent(
+                            customerName: customerNameController.text,
+                            customerEmail: customerEmailController.text,
+                            customerPhone: customerPhoneController.text,
+                            customerGender: selectedGender,
+                            customerMarriageStatus: selectedMarriageStatus,
+                            customerDob: selectedCustomerDOB,
+                            selectedCountry: selectedCountry,
+                            selectedState: selectedState,
+                            selectedCity: selectedCity));
+                  },
+                  errorText: (state is CustomerFormInvalidState)
+                      ? state.customerName
+                      : null,
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]'))
                   ],
@@ -114,6 +139,22 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                   controller: customerEmailController,
                   keyboardType: TextInputType.emailAddress,
                   labelText: "Customer E-Mail",
+                  onChanged: (value) {
+                    BlocProvider.of<CustomerBloc>(context).add(
+                        CustomerTextChangeEvent(
+                            customerName: customerNameController.text,
+                            customerEmail: customerEmailController.text,
+                            customerPhone: customerPhoneController.text,
+                            customerGender: selectedGender,
+                            customerMarriageStatus: selectedMarriageStatus,
+                            customerDob: selectedCustomerDOB,
+                            selectedCountry: selectedCountry,
+                            selectedState: selectedState,
+                            selectedCity: selectedCity));
+                  },
+                  errorText: (state is CustomerFormInvalidState)
+                      ? state.customerEmail
+                      : null,
                   normalIcon: Icons.person,
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@. ]'))
@@ -125,7 +166,23 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                 child: CustomTextFormField(
                   controller: customerPhoneController,
                   keyboardType: TextInputType.phone,
+                  onChanged: (value) {
+                    BlocProvider.of<CustomerBloc>(context).add(
+                        CustomerTextChangeEvent(
+                            customerName: customerNameController.text,
+                            customerEmail: customerEmailController.text,
+                            customerPhone: customerPhoneController.text,
+                            customerGender: selectedGender,
+                            customerMarriageStatus: selectedMarriageStatus,
+                            customerDob: selectedCustomerDOB,
+                            selectedCountry: selectedCountry,
+                            selectedState: selectedState,
+                            selectedCity: selectedCity));
+                  },
                   maxLength: 10,
+                  errorText: (state is CustomerFormInvalidState)
+                      ? state.customerPhone
+                      : null,
                   labelText: "Customer Phone",
                   normalIcon: Icons.phone,
                   inputFormatters: [
@@ -146,10 +203,24 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                       items: genderList,
                       hint: "Select Gender",
                       selectedValue: selectedGender,
+                      errorText: (state is CustomerFormInvalidState)
+                          ? state.customerGender
+                          : null,
                       onChanged: (value) {
                         setState(() {
                           selectedGender = value;
                         });
+                        BlocProvider.of<CustomerBloc>(context).add(
+                            CustomerTextChangeEvent(
+                                customerName: customerNameController.text,
+                                customerEmail: customerEmailController.text,
+                                customerPhone: customerPhoneController.text,
+                                customerGender: selectedGender,
+                                customerMarriageStatus: selectedMarriageStatus,
+                                customerDob: selectedCustomerDOB,
+                                selectedCountry: selectedCountry,
+                                selectedState: selectedState,
+                                selectedCity: selectedCity));
                       },
                       getTitle: (item) => item['title']),
                 ),
@@ -166,25 +237,67 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                   subtitle: CustomRadioButtons(
                       items: marriageStatusList,
                       selectedValue: selectedMarriageStatus,
+                      errorText: (state is CustomerFormInvalidState)
+                          ? state.customerMarriageStatus
+                          : null,
                       onChanged: (value) {
                         setState(() {
                           selectedMarriageStatus = value;
                         });
+                        BlocProvider.of<CustomerBloc>(context).add(
+                            CustomerTextChangeEvent(
+                                customerName: customerNameController.text,
+                                customerEmail: customerEmailController.text,
+                                customerPhone: customerPhoneController.text,
+                                customerGender: selectedGender,
+                                customerMarriageStatus: selectedMarriageStatus,
+                                customerDob: selectedCustomerDOB,
+                                selectedCountry: selectedCountry,
+                                selectedState: selectedState,
+                                selectedCity: selectedCity));
                       },
                       getTitle: (item) => item['title']),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 5),
-                child: CustomTextFormField(
-                  prefix: const Icon(
-                    Icons.calendar_month,
-                    size: 50,
-                    color: Colors.white,
+              InkWell(
+                onTap: () {
+                  showDatePicker(
+                          context: context,
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime(2100))
+                      .then((c) {
+                    setState(() {
+                      selectedCustomerDOB = c;
+                      customerDobController.text = DateFormat('d-M-y').format(c??DateTime.now());
+                    });
+                  });
+                  BlocProvider.of<CustomerBloc>(context).add(
+                      CustomerTextChangeEvent(
+                          customerName: customerNameController.text,
+                          customerEmail: customerEmailController.text,
+                          customerPhone: customerPhoneController.text,
+                          customerGender: selectedGender,
+                          customerMarriageStatus: selectedMarriageStatus,
+                          customerDob: selectedCustomerDOB,
+                          selectedCountry: selectedCountry,
+                          selectedState: selectedState,
+                          selectedCity: selectedCity));
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  child: CustomTextFormField(
+                    prefix: const Icon(
+                      Icons.calendar_month,
+                      size: 50,
+                      color: Colors.white,
+                    ),
+                    controller: customerDobController,
+                    enabled: false,
+                    labelText: "Select DOB",
+                    errorText: (state is CustomerFormInvalidState)
+                        ? state.customerdob
+                        : null,
                   ),
-                  controller: customerDobController,
-                  enabled: false,
-                  labelText: "Select DOB",
                 ),
               ),
               Container(
@@ -200,6 +313,9 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                       items: countryList!,
                       hint: "Select Country",
                       selectedValue: selectedCountry,
+                      errorText: (state is CustomerFormInvalidState)
+                          ? state.countryError
+                          : null,
                       onChanged: (value) {
                         setState(() {
                           stateList = [];
@@ -226,6 +342,9 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                       items: stateList!,
                       hint: "Select State",
                       selectedValue: selectedState,
+                      errorText: (state is CustomerFormInvalidState)
+                          ? state.stateError
+                          : null,
                       onChanged: (value) {
                         setState(() {
                           cityList = [];
@@ -252,14 +371,29 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                       items: cityList!,
                       hint: "Select City",
                       selectedValue: selectedCity,
+                      errorText: (state is CustomerFormInvalidState)
+                          ? state.cityError
+                          : null,
                       onChanged: (value) {
                         setState(() {
                           selectedCity = value;
                         });
+                        BlocProvider.of<CustomerBloc>(context).add(
+                            CustomerTextChangeEvent(
+                                customerName: customerNameController.text,
+                                customerEmail: customerEmailController.text,
+                                customerPhone: customerPhoneController.text,
+                                customerGender: selectedGender,
+                                customerMarriageStatus: selectedMarriageStatus,
+                                customerDob: selectedCustomerDOB,
+                                selectedCountry: selectedCountry,
+                                selectedState: selectedState,
+                                selectedCity: selectedCity));
                       },
                       getTitle: (item) => item.name!),
                 ),
               ),
+              
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 5),
                 child: InkWell(

@@ -58,6 +58,7 @@ class CustomTextFormField extends StatelessWidget {
         labelText: labelText,
         counterText: '',
         errorText: errorText,
+        errorStyle: const TextStyle(color: Colors.deepOrange),
         labelStyle: const TextStyle(
             color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
         border: OutlineInputBorder(

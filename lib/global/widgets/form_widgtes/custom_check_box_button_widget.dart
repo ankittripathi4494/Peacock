@@ -5,6 +5,7 @@ class CustomCheckboxButtons<T> extends StatelessWidget {
   final List<T> selectedValues;
   final Function(T) onChanged;
   final String Function(T) getTitle; // Function to extract title from item
+  final String? errorText;
 
   const CustomCheckboxButtons({
     super.key,
@@ -12,37 +13,47 @@ class CustomCheckboxButtons<T> extends StatelessWidget {
     required this.selectedValues,
     required this.onChanged,
     required this.getTitle, // Required parameter to extract title
+    this.errorText
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: items
-              .map((item) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: ChoiceChip(
-                      label: Text(getTitle(item)), // Use getTitle to extract title
-                      selected: selectedValues.contains(item),
-                      onSelected: (selected) {
-                        if (selected) {
-                          onChanged(item);
-                        }
-                      },
-                      selectedColor: Colors.deepOrange,
-                      backgroundColor: Colors.grey.shade300,
-                      labelStyle: TextStyle(
-                        color: selectedValues.contains(item)
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                    ),
-                  ))
-              .toList(),
-        ),
+      child: Column(
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: items
+                  .map((item) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: ChoiceChip(
+                          label: Text(getTitle(item)), // Use getTitle to extract title
+                          selected: selectedValues.contains(item),
+                          onSelected: (selected) {
+                            if (selected) {
+                              onChanged(item);
+                            }
+                          },
+                          selectedColor: Colors.deepOrange,
+                          backgroundColor: Colors.grey.shade300,
+                          labelStyle: TextStyle(
+                            color: selectedValues.contains(item)
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        const SizedBox(height: 5,),
+        Text(
+          errorText ?? '',
+          style: const TextStyle(color: Colors.deepOrange),
+        )
+        ],
       ),
     );
   }

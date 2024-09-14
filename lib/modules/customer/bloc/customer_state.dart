@@ -15,13 +15,19 @@ class CustomerFormInvalidState extends CustomerState {
   late String? customerGender;
   late String? customerMarriageStatus;
   late String? customerdob;
+  late String? countryError;
+  late String? stateError;
+  late String? cityError;
   CustomerFormInvalidState({
     required this.customerName,
     required this.customerEmail,
     required this.customerPhone,
     required this.customerGender,
     required this.customerMarriageStatus,
-     required this.customerdob,
+    required this.customerdob,
+    required this.countryError,
+    required this.stateError,
+    required this.cityError,
   });
 }
 
@@ -29,7 +35,7 @@ class CustomerFormValidState extends CustomerState {}
 
 //! State for Add Customer Event
 
-class AddCustomerLoadingState extends CustomerState{}
+class AddCustomerLoadingState extends CustomerState {}
 
 class AddCustomerSuccessState extends CustomerState {
   late String successMessage;
@@ -47,7 +53,7 @@ class AddCustomerFailedState extends CustomerState {
 
 //! State for Edit Customer Event
 
-class EditCustomerLoadingState extends CustomerState{}
+class EditCustomerLoadingState extends CustomerState {}
 
 class EditCustomerSuccessState extends CustomerState {
   late String successMessage;
@@ -63,11 +69,9 @@ class EditCustomerFailedState extends CustomerState {
   });
 }
 
-
-
 //! State for Customer Country Fetch Event
 
-class CustomerCountryLoadingState extends CustomerState{}
+class CustomerCountryLoadingState extends CustomerState {}
 
 class CustomerCountryLoadedState extends CustomerState {
   late List<CountryResponseData>? countryResponseData;
@@ -85,11 +89,9 @@ class CustomerCountryLoadingFailedState extends CustomerState {
   });
 }
 
-
-
 //! State for Customer State Fetch Event
 
-class CustomerStateLoadingState extends CustomerState{}
+class CustomerStateLoadingState extends CustomerState {}
 
 class CustomerStateLoadedState extends CustomerState {
   late List<StateResponseData>? stateResponseData;
@@ -107,10 +109,9 @@ class CustomerStateLoadingFailedState extends CustomerState {
   });
 }
 
-
 //! State for Customer City Fetch Event
 
-class CustomerCityLoadingState extends CustomerState{}
+class CustomerCityLoadingState extends CustomerState {}
 
 class CustomerCityLoadedState extends CustomerState {
   late List<CityResponseData>? cityResponseData;
