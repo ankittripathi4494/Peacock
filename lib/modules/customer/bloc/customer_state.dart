@@ -128,3 +128,23 @@ class CustomerCityLoadingFailedState extends CustomerState {
     required this.errorMessage,
   });
 }
+
+//! State for Customer List Fetch Event
+
+class CustomerListLoadingState extends CustomerState {}
+
+class CustomerListLoadedState extends CustomerState {
+  late List<Map<String, dynamic>>? customerListResponseData;
+  late String? successMessage;
+  CustomerListLoadedState({
+    required this.customerListResponseData,
+    required this.successMessage,
+  });
+}
+
+class CustomerListLoadingFailedState extends CustomerState {
+  late String? errorMessage;
+  CustomerListLoadingFailedState({
+    required this.errorMessage,
+  });
+}

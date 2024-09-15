@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pecockapp/modules/business/screens/business_screen.dart';
+import 'package:pecockapp/modules/customer/bloc/customer_bloc.dart';
 import 'package:pecockapp/modules/customer/screens/add_customer_screen.dart';
 import 'package:pecockapp/modules/customer/screens/customer_screen.dart';
 import 'package:pecockapp/modules/customer/screens/edit_customer_screen.dart';
@@ -119,16 +120,22 @@ class RoutesSection {
           return PageTransition(
             duration: Durations.medium4,
             type: PageTransitionType.fade,
-            child: CustomerScreen(
-              argus: args,
+            child: BlocProvider(
+              create: (context) => CustomerBloc(),
+              child: CustomerScreen(
+                argus: args,
+              ),
             ),
           );
         }
         return PageTransition(
           duration: Durations.medium4,
           type: PageTransitionType.fade,
-          child: CustomerScreen(
-            argus: const {},
+          child: BlocProvider(
+            create: (context) => CustomerBloc(),
+            child: CustomerScreen(
+              argus: const {},
+            ),
           ),
         );
       case '/add-customer':
@@ -136,16 +143,22 @@ class RoutesSection {
           return PageTransition(
             duration: Durations.medium4,
             type: PageTransitionType.fade,
-            child: AddCustomerScreen(
-              argus: args,
+            child: BlocProvider(
+              create: (context) => CustomerBloc(),
+              child: AddCustomerScreen(
+                argus: args,
+              ),
             ),
           );
         }
         return PageTransition(
           duration: Durations.medium4,
           type: PageTransitionType.fade,
-          child: AddCustomerScreen(
-            argus: const {},
+          child: BlocProvider(
+            create: (context) => CustomerBloc(),
+            child: AddCustomerScreen(
+              argus: const {},
+            ),
           ),
         );
       case '/edit-customer':
@@ -153,16 +166,22 @@ class RoutesSection {
           return PageTransition(
             duration: Durations.medium4,
             type: PageTransitionType.fade,
-            child: EditCustomerScreen(
-              argus: args,
+            child: BlocProvider(
+              create: (context) => CustomerBloc(),
+              child: EditCustomerScreen(
+                argus: args,
+              ),
             ),
           );
         }
         return PageTransition(
           duration: Durations.medium4,
           type: PageTransitionType.fade,
-          child: EditCustomerScreen(
-            argus: const {},
+          child: BlocProvider(
+            create: (context) => CustomerBloc(),
+            child: EditCustomerScreen(
+              argus: const {},
+            ),
           ),
         );
       case '/business':

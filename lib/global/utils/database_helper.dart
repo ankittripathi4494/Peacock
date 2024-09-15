@@ -55,10 +55,10 @@ class DatabaseHelper {
       CREATE TABLE IF NOT EXISTS Customer (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
-        age TEXT,
+        email TEXT,
         gender INTEGER, 
         marriage_status INTEGER, 
-        address TEXT,
+        mobile TEXT,
         city_id INTEGER,
         state_id INTEGER,
         country_id INTEGER,

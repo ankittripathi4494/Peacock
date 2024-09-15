@@ -10,6 +10,7 @@ import 'package:pecockapp/global/widgets/auto_schedule_task.dart';
 import 'package:pecockapp/global/widgets/form_widgtes/custom_dropdown_form_widget.dart';
 import 'package:pecockapp/global/widgets/form_widgtes/custom_radio_form_widget.dart';
 import 'package:pecockapp/global/widgets/form_widgtes/custom_text_form_widget.dart';
+import 'package:pecockapp/global/widgets/toast.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_bloc.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_event.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_state.dart';
@@ -44,6 +45,7 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
 
   @override
   void initState() {
+    fetchCustomerDetails();
     fetchCountry();
 
     super.initState();
@@ -66,18 +68,64 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
         stateResponseData: selectedState));
   }
 
+  fetchCustomerDetails() {
+    if (widget.argus.containsKey('data')) {
+      Map<String, dynamic> data = widget.argus['data'];
+
+      LoggerUtil().errorData(data);
+      setState(() {
+        customerNameController.text = data['name'];
+        customerEmailController.text = data['email'];
+        customerPhoneController.text = data['mobile'];
+        customerDobController.text =
+            DateFormat('d-M-y').format(DateTime.parse(data['dob']));
+      });
+
+      for (var gl in genderList) {
+        if (int.parse(gl['input'].toString()) ==
+            int.parse(data['gender'].toString())) {
+          setState(() {
+            selectedGender = gl;
+          });
+        }
+      }
+      for (var msl in marriageStatusList) {
+        if (int.parse(msl['input'].toString()) ==
+            int.parse(data['marriage_status'].toString())) {
+          setState(() {
+            selectedMarriageStatus = msl;
+          });
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CustomerBloc, CustomerState>(
-      builder: (context, state) {
-        return Form(
-            child: Column(
-          children: [
-            (state is CustomerCountryLoadedState)
+    return SingleChildScrollView(
+      child: BlocBuilder<CustomerBloc, CustomerState>(
+        builder: (context, state) {
+          return Form(
+              child: Column(
+            children: [
+              (state is CustomerCountryLoadedState)
                   ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
                       setState(() {
                         countryList = state.countryResponseData;
                       });
+
+                      if (widget.argus.containsKey('data')) {
+                        Map<String, dynamic> data = widget.argus['data'];
+                        for (CountryResponseData cl in countryList ?? []) {
+                          if (int.parse(cl.id.toString()) ==
+                              int.parse(data['country_id'].toString())) {
+                            setState(() {
+                              selectedCountry = cl;
+                            });
+                            fetchState(selectedCountry: cl);
+                          }
+                        }
+                      }
 
                       LoggerUtil()
                           .debugData("Country:- ${state.countryResponseData}");
@@ -88,7 +136,20 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
                       setState(() {
                         stateList = state.stateResponseData;
                       });
-
+                      if (widget.argus.containsKey('data')) {
+                        Map<String, dynamic> data = widget.argus['data'];
+                        for (StateResponseData sl in stateList ?? []) {
+                          if (int.parse(sl.id.toString()) ==
+                              int.parse(data['state_id'].toString())) {
+                            setState(() {
+                              selectedState = sl;
+                            });
+                            fetchCity(
+                                selectedCountry: selectedCountry,
+                                selectedState: sl);
+                          }
+                        }
+                      }
                       LoggerUtil()
                           .debugData("State:- ${state.stateResponseData}");
                     }, taskWaitDuration: Durations.short4)
@@ -98,7 +159,17 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
                       setState(() {
                         cityList = state.cityResponseData;
                       });
-
+                      if (widget.argus.containsKey('data')) {
+                        Map<String, dynamic> data = widget.argus['data'];
+                        for (CityResponseData cil in cityList ?? []) {
+                          if (int.parse(cil.id.toString()) ==
+                              int.parse(data['city_id'].toString())) {
+                            setState(() {
+                              selectedCity = cil;
+                            });
+                          }
+                        }
+                      }
                       LoggerUtil()
                           .debugData("City:- ${state.cityResponseData}");
                     }, taskWaitDuration: Durations.short4)
@@ -266,20 +337,21 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
                       .then((c) {
                     setState(() {
                       selectedCustomerDOB = c;
-                      customerDobController.text = DateFormat('d-M-y').format(c??DateTime.now());
+                      customerDobController.text =
+                          DateFormat('d-M-y').format(c ?? DateTime.now());
                     });
+                    BlocProvider.of<CustomerBloc>(context).add(
+                        CustomerTextChangeEvent(
+                            customerName: customerNameController.text,
+                            customerEmail: customerEmailController.text,
+                            customerPhone: customerPhoneController.text,
+                            customerGender: selectedGender,
+                            customerMarriageStatus: selectedMarriageStatus,
+                            customerDob: selectedCustomerDOB,
+                            selectedCountry: selectedCountry,
+                            selectedState: selectedState,
+                            selectedCity: selectedCity));
                   });
-                  BlocProvider.of<CustomerBloc>(context).add(
-                      CustomerTextChangeEvent(
-                          customerName: customerNameController.text,
-                          customerEmail: customerEmailController.text,
-                          customerPhone: customerPhoneController.text,
-                          customerGender: selectedGender,
-                          customerMarriageStatus: selectedMarriageStatus,
-                          customerDob: selectedCustomerDOB,
-                          selectedCountry: selectedCountry,
-                          selectedState: selectedState,
-                          selectedCity: selectedCity));
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(vertical: 5),
@@ -376,47 +448,72 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
                         setState(() {
                           selectedCity = value;
                         });
-                        BlocProvider.of<CustomerBloc>(context).add(
-                            CustomerTextChangeEvent(
-                                customerName: customerNameController.text,
-                                customerEmail: customerEmailController.text,
-                                customerPhone: customerPhoneController.text,
-                                customerGender: selectedGender,
-                                customerMarriageStatus: selectedMarriageStatus,
-                                customerDob: selectedCustomerDOB,
-                                selectedCountry: selectedCountry,
-                                selectedState: selectedState,
-                                selectedCity: selectedCity));
                       },
                       getTitle: (item) => item.name!),
                 ),
               ),
-              
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 5),
-              child: InkWell(
-                onTap: () {},
-                child: Container(
-                  width: context.screenWidth,
-                  height: 50,
-                  decoration: const BoxDecoration(
-                    color: Colors.deepOrange,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      "Edit Customer",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ));
-      },
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                child: (state is CustomerFormValidState)
+                    ? InkWell(
+                        onTap: () {
+                          if (selectedCountry == null) {
+                            ToastedNotification.errorToast(context,
+                                description: "Please select country");
+                          } else if (selectedState == null) {
+                            ToastedNotification.errorToast(context,
+                                description: "Please select state");
+                          } else if (selectedState == null) {
+                            ToastedNotification.errorToast(context,
+                                description: "Please select city");
+                          } else {
+                            ToastedNotification.successToast(context,
+                                description: "Data submitted Successfully");
+                          }
+                        },
+                        child: Container(
+                          width: context.screenWidth,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: Colors.deepOrange,
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "Edit Customer",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      )
+                    : InkWell(
+                        onTap: () {},
+                        child: Container(
+                          width: context.screenWidth,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: Colors.grey,
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "Edit Customer",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+              )
+            ],
+          ));
+        },
+      ),
     );
   }
 }

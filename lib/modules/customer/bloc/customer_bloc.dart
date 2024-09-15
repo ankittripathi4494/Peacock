@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/utils/api_list.dart';
+import 'package:pecockapp/global/utils/database_helper.dart';
 import 'package:pecockapp/global/utils/logger_util.dart';
 import 'package:pecockapp/global/utils/utils.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_event.dart';
@@ -14,12 +15,15 @@ import 'package:pecockapp/modules/customer/model/state_response_model.dart';
 class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   //event -> takes input in the bloc
   //emit -> gives output out from the bloc
+  DatabaseHelper dbh = DatabaseHelper();
   CustomerBloc() : super(CustomerInitial()) {
     on<CustomerTextChangeEvent>(_customerValidFunc);
-
     on<CustomerCountryFetchEvent>(_customerCountryFetchMethod);
     on<CustomerStateFetchEvent>(_customerStateFetchMethod);
     on<CustomerCityFetchEvent>(_customerCityFetchMethod);
+    on<CustomerListFetchEvent>(_fetchCustomerList);
+    on<AddCustomerEvent>(_addCustomerMethod);
+    on<EditCustomerEvent>(_editCustomerMethod);
   }
 
   _customerValidFunc(
@@ -63,7 +67,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
                   : 'Please Enter Correct E-Mail'),
           customerPhone: (event.customerPhone.isEmpty)
               ? 'Please Enter Confirm Password'
-              : ((event.customerPhone.isValidContact())
+              : ((!event.customerPhone.isValidContact())
                   ? 'Please enter correct mobile number'
                   : null),
           customerGender:
@@ -192,4 +196,52 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       emit(CustomerCityLoadingFailedState(errorMessage: e.toString()));
     }
   }
+
+  _fetchCustomerList(
+      CustomerListFetchEvent event, Emitter<CustomerState> emit) async {
+    List<Map<String, dynamic>>? fetchRecound = await dbh.queryAllRows(
+      "Customer",
+    );
+    try {
+      if (fetchRecound.isNotEmpty) {
+        emit(CustomerListLoadedState(
+            customerListResponseData: fetchRecound,
+            successMessage: "${fetchRecound.length} customer records found"));
+      } else {
+        emit(
+            CustomerListLoadingFailedState(errorMessage: "No Customers Found"));
+      }
+    } catch (e) {
+      emit(CustomerListLoadingFailedState(errorMessage: e.toString()));
+    }
+  }
+
+  _addCustomerMethod(
+      AddCustomerEvent event, Emitter<CustomerState> emit) async {
+    Map<String, dynamic> inputMap = {};
+    inputMap['name'] = event.customerName;
+    inputMap['email'] = event.customerEmail;
+    inputMap['dob'] = event.customerDob.toString();
+    inputMap['gender'] = event.customerGender?["input"];
+    inputMap['marriage_status'] = event.customerMarriageStatus?["input"];
+    inputMap['mobile'] = event.customerPhone;
+    inputMap['country_id'] = event.selectedCountry?.id;
+    inputMap['state_id'] = event.selectedState?.id;
+    inputMap['city_id'] = event.selectedCity?.id;
+    inputMap['status'] = '1';
+    LoggerUtil().warningData(inputMap);
+    int result = await dbh.insert("Customer", inputMap);
+    try {
+      if (result > 0) {
+        emit(AddCustomerSuccessState(
+            successMessage: "$result customer added successfully"));
+      } else {
+        emit(AddCustomerFailedState(failedMessage: 'Failed to add customer'));
+      }
+    } catch (e) {
+      emit(AddCustomerFailedState(failedMessage: e.toString()));
+    }
+  }
+
+  _editCustomerMethod(EditCustomerEvent event, Emitter<CustomerState> emit) {}
 }

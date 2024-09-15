@@ -10,6 +10,7 @@ import 'package:pecockapp/global/widgets/auto_schedule_task.dart';
 import 'package:pecockapp/global/widgets/form_widgtes/custom_dropdown_form_widget.dart';
 import 'package:pecockapp/global/widgets/form_widgtes/custom_radio_form_widget.dart';
 import 'package:pecockapp/global/widgets/form_widgtes/custom_text_form_widget.dart';
+import 'package:pecockapp/global/widgets/toast.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_bloc.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_event.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_state.dart';
@@ -75,6 +76,22 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
             child: SingleChildScrollView(
           child: Column(
             children: [
+              (state is AddCustomerSuccessState)
+                  ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
+                      Navigator.pop(context);
+                      Navigator.pushReplacementNamed(context, '/customer-list');
+
+                      ToastedNotification.successToast(context,
+                          description: state.successMessage);
+                    }, taskWaitDuration: Durations.short4)
+                  : const SizedBox.shrink(),
+              (state is AddCustomerFailedState)
+                  ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
+                      Navigator.pushReplacementNamed(context, '/add-customer');
+                      ToastedNotification.errorToast(context,
+                          description: state.failedMessage);
+                    }, taskWaitDuration: Durations.short4)
+                  : const SizedBox.shrink(),
               (state is CustomerCountryLoadedState)
                   ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
                       setState(() {
@@ -267,21 +284,22 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                           lastDate: DateTime(2100))
                       .then((c) {
                     setState(() {
-                      selectedCustomerDOB = c;
-                      customerDobController.text = DateFormat('d-M-y').format(c??DateTime.now());
+                      selectedCustomerDOB = c ?? DateTime.now();
+                      customerDobController.text =
+                          DateFormat('d-M-y').format(c ?? DateTime.now());
                     });
+                    BlocProvider.of<CustomerBloc>(context).add(
+                        CustomerTextChangeEvent(
+                            customerName: customerNameController.text,
+                            customerEmail: customerEmailController.text,
+                            customerPhone: customerPhoneController.text,
+                            customerGender: selectedGender,
+                            customerMarriageStatus: selectedMarriageStatus,
+                            customerDob: selectedCustomerDOB,
+                            selectedCountry: selectedCountry,
+                            selectedState: selectedState,
+                            selectedCity: selectedCity));
                   });
-                  BlocProvider.of<CustomerBloc>(context).add(
-                      CustomerTextChangeEvent(
-                          customerName: customerNameController.text,
-                          customerEmail: customerEmailController.text,
-                          customerPhone: customerPhoneController.text,
-                          customerGender: selectedGender,
-                          customerMarriageStatus: selectedMarriageStatus,
-                          customerDob: selectedCustomerDOB,
-                          selectedCountry: selectedCountry,
-                          selectedState: selectedState,
-                          selectedCity: selectedCity));
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(vertical: 5),
@@ -378,43 +396,77 @@ class _AddCustomerWidgetState extends State<AddCustomerWidget> {
                         setState(() {
                           selectedCity = value;
                         });
-                        BlocProvider.of<CustomerBloc>(context).add(
-                            CustomerTextChangeEvent(
-                                customerName: customerNameController.text,
-                                customerEmail: customerEmailController.text,
-                                customerPhone: customerPhoneController.text,
-                                customerGender: selectedGender,
-                                customerMarriageStatus: selectedMarriageStatus,
-                                customerDob: selectedCustomerDOB,
-                                selectedCountry: selectedCountry,
-                                selectedState: selectedState,
-                                selectedCity: selectedCity));
                       },
                       getTitle: (item) => item.name!),
                 ),
               ),
-              
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 5),
-                child: InkWell(
-                  onTap: () {},
-                  child: Container(
-                    width: context.screenWidth,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.deepOrange,
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Add Customer",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
+                child: (state is CustomerFormValidState)
+                    ? InkWell(
+                        onTap: () {
+                          if (selectedCountry == null) {
+                            ToastedNotification.errorToast(context,
+                                description: "Please select country");
+                          } else if (selectedState == null) {
+                            ToastedNotification.errorToast(context,
+                                description: "Please select state");
+                          } else if (selectedState == null) {
+                            ToastedNotification.errorToast(context,
+                                description: "Please select city");
+                          } else {
+                            BlocProvider.of<CustomerBloc>(context).add(
+                                AddCustomerEvent(
+                                    customerName: customerNameController.text,
+                                    customerEmail: customerEmailController.text,
+                                    customerPhone: customerPhoneController.text,
+                                    customerGender: selectedGender,
+                                    customerMarriageStatus:
+                                        selectedMarriageStatus,
+                                    customerDob: selectedCustomerDOB,
+                                    selectedCountry: selectedCountry,
+                                    selectedState: selectedState,
+                                    selectedCity: selectedCity));
+                          }
+                        },
+                        child: Container(
+                          width: context.screenWidth,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: Colors.deepOrange,
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "Add Customer",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      )
+                    : InkWell(
+                        onTap: () {},
+                        child: Container(
+                          width: context.screenWidth,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: Colors.grey,
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "Add Customer",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
               )
             ],
           ),
