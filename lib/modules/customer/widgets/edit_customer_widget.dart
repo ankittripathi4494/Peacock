@@ -108,6 +108,23 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
           return Form(
               child: Column(
             children: [
+              (state is EditCustomerSuccessState)
+                  ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
+                      Navigator.pop(context);
+                      Navigator.pushReplacementNamed(context, '/customer-list');
+
+                      ToastedNotification.successToast(context,
+                          description: state.successMessage);
+                    }, taskWaitDuration: Durations.short4)
+                  : const SizedBox.shrink(),
+              (state is EditCustomerFailedState)
+                  ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
+                      Navigator.pushReplacementNamed(context, '/edit-customer',
+                          arguments: widget.argus);
+                      ToastedNotification.errorToast(context,
+                          description: state.failedMessage);
+                    }, taskWaitDuration: Durations.short4)
+                  : const SizedBox.shrink(),
               (state is CustomerCountryLoadedState)
                   ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
                       setState(() {
@@ -467,8 +484,19 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
                             ToastedNotification.errorToast(context,
                                 description: "Please select city");
                           } else {
-                            ToastedNotification.successToast(context,
-                                description: "Data submitted Successfully");
+                            BlocProvider.of<CustomerBloc>(context).add(
+                                EditCustomerEvent(
+                                    customerName: customerNameController.text,
+                                    customerEmail: customerEmailController.text,
+                                    customerPhone: customerPhoneController.text,
+                                    customerGender: selectedGender,
+                                    customerMarriageStatus:
+                                        selectedMarriageStatus,
+                                    customerDob: selectedCustomerDOB,
+                                    selectedCountry: selectedCountry,
+                                    selectedState: selectedState,
+                                    selectedCity: selectedCity,
+                                    customerId: widget.argus['data']['id'].toString()));
                           }
                         },
                         child: Container(

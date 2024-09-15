@@ -21,9 +21,10 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     on<CustomerCountryFetchEvent>(_customerCountryFetchMethod);
     on<CustomerStateFetchEvent>(_customerStateFetchMethod);
     on<CustomerCityFetchEvent>(_customerCityFetchMethod);
-    on<CustomerListFetchEvent>(_fetchCustomerList);
-    on<AddCustomerEvent>(_addCustomerMethod);
-    on<EditCustomerEvent>(_editCustomerMethod);
+    on<CustomerListFetchEvent>(_fetchCustomerListInSqflite);
+    on<AddCustomerEvent>(_addCustomerMethodINSqflite);
+    on<EditCustomerEvent>(_editCustomerMethodSqflite);
+    on<DeleteCustomerEvent>(_deleteCustomerMethodSqflite);
   }
 
   _customerValidFunc(
@@ -197,7 +198,8 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     }
   }
 
-  _fetchCustomerList(
+//! SQFLITE
+  _fetchCustomerListInSqflite(
       CustomerListFetchEvent event, Emitter<CustomerState> emit) async {
     List<Map<String, dynamic>>? fetchRecound = await dbh.queryAllRows(
       "Customer",
@@ -216,7 +218,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     }
   }
 
-  _addCustomerMethod(
+  _addCustomerMethodINSqflite(
       AddCustomerEvent event, Emitter<CustomerState> emit) async {
     Map<String, dynamic> inputMap = {};
     inputMap['name'] = event.customerName;
@@ -243,5 +245,101 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     }
   }
 
-  _editCustomerMethod(EditCustomerEvent event, Emitter<CustomerState> emit) {}
+  _editCustomerMethodSqflite(
+      EditCustomerEvent event, Emitter<CustomerState> emit) async {
+    Map<String, dynamic> inputMap = {};
+    inputMap['name'] = event.customerName;
+    inputMap['email'] = event.customerEmail;
+    inputMap['dob'] = event.customerDob.toString();
+    inputMap['gender'] = event.customerGender?["input"];
+    inputMap['marriage_status'] = event.customerMarriageStatus?["input"];
+    inputMap['mobile'] = event.customerPhone;
+    inputMap['country_id'] = event.selectedCountry?.id;
+    inputMap['state_id'] = event.selectedState?.id;
+    inputMap['city_id'] = event.selectedCity?.id;
+    inputMap['status'] = '1';
+    LoggerUtil().warningData(inputMap);
+    int result =
+        await dbh.update("Customer", inputMap, "id=?", [event.customerId]);
+    try {
+      if (result > 0) {
+        emit(EditCustomerSuccessState(
+            successMessage: "$result customer updated successfully"));
+      } else {
+        emit(EditCustomerFailedState(failedMessage: 'Failed to add customer'));
+      }
+    } catch (e) {
+      emit(EditCustomerFailedState(failedMessage: e.toString()));
+    }
+  }
+ 
+ _deleteCustomerMethodSqflite(
+      DeleteCustomerEvent event, Emitter<CustomerState> emit) async {
+
+    int result =
+        await dbh.delete("Customer", "id=?", [event.customerId]);
+    try {
+      if (result > 0) {
+        emit(DeleteCustomerSuccessState(
+            successMessage: "$result customer deleted successfully"));
+      } else {
+        emit(DeleteCustomerFailedState(failedMessage: 'Failed to add customer'));
+      }
+    } catch (e) {
+      emit(DeleteCustomerFailedState(failedMessage: e.toString()));
+    }
+  }
+
+
+//! API And MYSQL
+/*
+  _fetchCustomerListInAPI(
+      CustomerListFetchEvent event, Emitter<CustomerState> emit) async {
+    List<Map<String, dynamic>>? fetchRecound = await dbh.queryAllRows(
+      "Customer",
+    );
+    try {
+      if (fetchRecound.isNotEmpty) {
+        emit(CustomerListLoadedState(
+            customerListResponseData: fetchRecound,
+            successMessage: "${fetchRecound.length} customer records found"));
+      } else {
+        emit(
+            CustomerListLoadingFailedState(errorMessage: "No Customers Found"));
+      }
+    } catch (e) {
+      emit(CustomerListLoadingFailedState(errorMessage: e.toString()));
+    }
+  }
+
+  _addCustomerMethodInAPI(
+      AddCustomerEvent event, Emitter<CustomerState> emit) async {
+    Map<String, dynamic> inputMap = {};
+    inputMap['name'] = event.customerName;
+    inputMap['email'] = event.customerEmail;
+    inputMap['dob'] = event.customerDob.toString();
+    inputMap['gender'] = event.customerGender?["input"];
+    inputMap['marriage_status'] = event.customerMarriageStatus?["input"];
+    inputMap['mobile'] = event.customerPhone;
+    inputMap['country_id'] = event.selectedCountry?.id;
+    inputMap['state_id'] = event.selectedState?.id;
+    inputMap['city_id'] = event.selectedCity?.id;
+    inputMap['status'] = '1';
+    LoggerUtil().warningData(inputMap);
+    int result = await dbh.insert("Customer", inputMap);
+    try {
+      if (result > 0) {
+        emit(AddCustomerSuccessState(
+            successMessage: "$result customer added successfully"));
+      } else {
+        emit(AddCustomerFailedState(failedMessage: 'Failed to add customer'));
+      }
+    } catch (e) {
+      emit(AddCustomerFailedState(failedMessage: e.toString()));
+    }
+  }
+
+  _editCustomerMethodInAPI(EditCustomerEvent event, Emitter<CustomerState> emit) {}
+
+*/
 }

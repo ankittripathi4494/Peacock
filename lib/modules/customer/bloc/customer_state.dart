@@ -69,6 +69,24 @@ class EditCustomerFailedState extends CustomerState {
   });
 }
 
+//! State for Delete Customer Event
+
+class DeleteCustomerLoadingState extends CustomerState {}
+
+class DeleteCustomerSuccessState extends CustomerState {
+  late String successMessage;
+  DeleteCustomerSuccessState({
+    required this.successMessage,
+  });
+}
+
+class DeleteCustomerFailedState extends CustomerState {
+  late String failedMessage;
+  DeleteCustomerFailedState({
+    required this.failedMessage,
+  });
+}
+
 //! State for Customer Country Fetch Event
 
 class CustomerCountryLoadingState extends CustomerState {}

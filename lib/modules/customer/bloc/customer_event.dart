@@ -58,8 +58,8 @@ class EditCustomerEvent extends CustomerEvent {
   late String customerName;
   late String customerEmail;
   late String customerPhone;
-  late String customerGender;
-  late String customerMarriageStatus;
+  late Map<String, dynamic>? customerGender;
+  late Map<String, dynamic>? customerMarriageStatus;
   late DateTime? customerDob;
     late CountryResponseData? selectedCountry;
   late StateResponseData? selectedState;
@@ -80,9 +80,9 @@ class EditCustomerEvent extends CustomerEvent {
 //! Event 4
 class CustomerListFetchEvent extends CustomerEvent {}
 //! Event 5
-class CustomerDetailsFetchEvent extends CustomerEvent {
+class DeleteCustomerEvent extends CustomerEvent {
   late String customerId;
-  CustomerDetailsFetchEvent({
+  DeleteCustomerEvent({
     required this.customerId,
   });
 }
