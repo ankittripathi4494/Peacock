@@ -9,6 +9,7 @@ import 'package:pecockapp/global/widgets/toast.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_bloc.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_event.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_state.dart';
+import 'package:pecockapp/modules/customer/model/all_customers_list_response_model.dart';
 
 class CustomerListWidget extends StatefulWidget {
   const CustomerListWidget({
@@ -54,7 +55,7 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
           return ListView.builder(
             itemCount: state.customerListResponseData?.length ?? 0,
             itemBuilder: (context, index) {
-              Map<String, dynamic> data =
+              AllCustomersListResponseData data =
                   state.customerListResponseData![index];
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
@@ -67,15 +68,15 @@ class _CustomerListWidgetState extends State<CustomerListWidget> {
                         arguments: {'data': data});
                   },
                   textColor: Colors.white,
-                  title: Text(data['name']),
-                  subtitle: Text(data['mobile']),
+                  title: Text(data.name ?? ''),
+                  subtitle: Text(data.mobile ?? ''),
                   trailing: IconButton(
                       style:
                           IconButton.styleFrom(foregroundColor: Colors.white),
                       onPressed: () {
                         BlocProvider.of<CustomerBloc>(context).add(
                             DeleteCustomerEvent(
-                                customerId: data['id'].toString()));
+                                customerId: data.id.toString()));
                       },
                       icon: const Icon(
                         CupertinoIcons.delete,

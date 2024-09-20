@@ -14,6 +14,7 @@ import 'package:pecockapp/global/widgets/toast.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_bloc.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_event.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_state.dart';
+import 'package:pecockapp/modules/customer/model/all_customers_list_response_model.dart';
 import 'package:pecockapp/modules/customer/model/city_response_model.dart';
 import 'package:pecockapp/modules/customer/model/country_response_model.dart';
 import 'package:pecockapp/modules/customer/model/state_response_model.dart';
@@ -70,28 +71,34 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
 
   fetchCustomerDetails() {
     if (widget.argus.containsKey('data')) {
-      Map<String, dynamic> data = widget.argus['data'];
+      AllCustomersListResponseData data =
+          (widget.argus['data'] as AllCustomersListResponseData);
 
       LoggerUtil().errorData(data);
       setState(() {
-        customerNameController.text = data['name'];
-        customerEmailController.text = data['email'];
-        customerPhoneController.text = data['mobile'];
-        customerDobController.text =
-            DateFormat('d-M-y').format(DateTime.parse(data['dob']));
+        customerNameController.text = data.name ?? '';
+        customerEmailController.text = data.email ?? '';
+        customerPhoneController.text = data.mobile ?? '';
+
+        String inputDate =
+            data.dob.toString(); // Input date string: '12-03-1995'
+
+// Parse the input date using the correct format
+        DateTime parsedDate = DateFormat('dd-MM-yyyy').parse(inputDate);
+
+// Format the parsed date into the desired format
+        customerDobController.text = DateFormat('d-M-y').format(parsedDate);
       });
 
       for (var gl in genderList) {
-        if (int.parse(gl['input'].toString()) ==
-            int.parse(data['gender'].toString())) {
+        if (int.parse(gl['input'].toString()) == data.gender) {
           setState(() {
             selectedGender = gl;
           });
         }
       }
       for (var msl in marriageStatusList) {
-        if (int.parse(msl['input'].toString()) ==
-            int.parse(data['marriage_status'].toString())) {
+        if (int.parse(msl['input'].toString()) == data.marriageStatus) {
           setState(() {
             selectedMarriageStatus = msl;
           });
@@ -132,10 +139,11 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
                       });
 
                       if (widget.argus.containsKey('data')) {
-                        Map<String, dynamic> data = widget.argus['data'];
+                        AllCustomersListResponseData data = (widget
+                            .argus['data'] as AllCustomersListResponseData);
                         for (CountryResponseData cl in countryList ?? []) {
                           if (int.parse(cl.id.toString()) ==
-                              int.parse(data['country_id'].toString())) {
+                              int.parse(data.countryId.toString())) {
                             setState(() {
                               selectedCountry = cl;
                             });
@@ -154,10 +162,11 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
                         stateList = state.stateResponseData;
                       });
                       if (widget.argus.containsKey('data')) {
-                        Map<String, dynamic> data = widget.argus['data'];
+                        AllCustomersListResponseData data = (widget
+                            .argus['data'] as AllCustomersListResponseData);
                         for (StateResponseData sl in stateList ?? []) {
                           if (int.parse(sl.id.toString()) ==
-                              int.parse(data['state_id'].toString())) {
+                              int.parse(data.stateId.toString())) {
                             setState(() {
                               selectedState = sl;
                             });
@@ -177,10 +186,11 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
                         cityList = state.cityResponseData;
                       });
                       if (widget.argus.containsKey('data')) {
-                        Map<String, dynamic> data = widget.argus['data'];
+                        AllCustomersListResponseData data = (widget
+                            .argus['data'] as AllCustomersListResponseData);
                         for (CityResponseData cil in cityList ?? []) {
                           if (int.parse(cil.id.toString()) ==
-                              int.parse(data['city_id'].toString())) {
+                              int.parse(data.cityId.toString())) {
                             setState(() {
                               selectedCity = cil;
                             });
@@ -496,7 +506,10 @@ class _EditCustomerWidgetState extends State<EditCustomerWidget> {
                                     selectedCountry: selectedCountry,
                                     selectedState: selectedState,
                                     selectedCity: selectedCity,
-                                    customerId: widget.argus['data']['id'].toString()));
+                                    customerId: (widget.argus['data']
+                                            as AllCustomersListResponseData)
+                                        .id
+                                        .toString()));
                           }
                         },
                         child: Container(

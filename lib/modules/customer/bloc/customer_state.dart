@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:pecockapp/modules/customer/model/all_customers_list_response_model.dart';
 import 'package:pecockapp/modules/customer/model/city_response_model.dart';
 import 'package:pecockapp/modules/customer/model/country_response_model.dart';
 import 'package:pecockapp/modules/customer/model/state_response_model.dart';
@@ -152,7 +153,7 @@ class CustomerCityLoadingFailedState extends CustomerState {
 class CustomerListLoadingState extends CustomerState {}
 
 class CustomerListLoadedState extends CustomerState {
-  late List<Map<String, dynamic>>? customerListResponseData;
+  late List<AllCustomersListResponseData>? customerListResponseData;
   late String? successMessage;
   CustomerListLoadedState({
     required this.customerListResponseData,

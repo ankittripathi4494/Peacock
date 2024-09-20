@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:pecockapp/global/utils/api_list.dart';
 import 'package:pecockapp/global/utils/database_helper.dart';
 import 'package:pecockapp/global/utils/logger_util.dart';
@@ -8,9 +9,13 @@ import 'package:pecockapp/global/utils/utils.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_event.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_state.dart';
 import 'package:http/http.dart' as http;
+import 'package:pecockapp/modules/customer/model/add_customer_response_model.dart';
+import 'package:pecockapp/modules/customer/model/all_customers_list_response_model.dart';
 import 'package:pecockapp/modules/customer/model/city_response_model.dart';
 import 'package:pecockapp/modules/customer/model/country_response_model.dart';
+import 'package:pecockapp/modules/customer/model/delete_customer_response_model.dart';
 import 'package:pecockapp/modules/customer/model/state_response_model.dart';
+import 'package:pecockapp/modules/customer/model/update_customer_response_model.dart';
 
 class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   //event -> takes input in the bloc
@@ -21,10 +26,10 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     on<CustomerCountryFetchEvent>(_customerCountryFetchMethod);
     on<CustomerStateFetchEvent>(_customerStateFetchMethod);
     on<CustomerCityFetchEvent>(_customerCityFetchMethod);
-    on<CustomerListFetchEvent>(_fetchCustomerListInSqflite);
-    on<AddCustomerEvent>(_addCustomerMethodINSqflite);
-    on<EditCustomerEvent>(_editCustomerMethodSqflite);
-    on<DeleteCustomerEvent>(_deleteCustomerMethodSqflite);
+    on<CustomerListFetchEvent>(_fetchCustomerListInAPI);
+    on<AddCustomerEvent>(_addCustomerMethodInAPI);
+    on<EditCustomerEvent>(_editCustomerMethodInAPI);
+    on<DeleteCustomerEvent>(_deleteCustomerMethodInAPI);
   }
 
   _customerValidFunc(
@@ -94,7 +99,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       var map = {};
       map['search'] = '';
       http.Response apiRequest = await http.post(
-          Uri.https(ApiList.mainDomain, ApiList.countryListAPI),
+          Uri.https(ApiList.mainDomainV1, ApiList.countryListAPI),
           body: map);
 
       LoggerUtil().debugData("Response Code := ${apiRequest.statusCode}");
@@ -131,8 +136,9 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       var map = {};
       map['search'] = '';
       map['country_id'] = event.countryResponseData?.id;
-      http.Response apiRequest = await http
-          .post(Uri.https(ApiList.mainDomain, ApiList.stateListAPI), body: map);
+      http.Response apiRequest = await http.post(
+          Uri.https(ApiList.mainDomainV1, ApiList.stateListAPI),
+          body: map);
 
       LoggerUtil().debugData("Response Code := ${apiRequest.statusCode}");
       if (apiRequest.statusCode >= 200 && apiRequest.statusCode < 300) {
@@ -168,8 +174,9 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       map['search'] = '';
       map['country_id'] = event.countryResponseData?.id;
       map['state_id'] = event.stateResponseData?.id;
-      http.Response apiRequest = await http
-          .post(Uri.https(ApiList.mainDomain, ApiList.cityListAPI), body: map);
+      http.Response apiRequest = await http.post(
+          Uri.https(ApiList.mainDomainV1, ApiList.cityListAPI),
+          body: map);
 
       LoggerUtil().debugData("Response Code := ${apiRequest.statusCode}");
       if (apiRequest.statusCode >= 200 && apiRequest.statusCode < 300) {
@@ -199,6 +206,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   }
 
 //! SQFLITE
+/*
   _fetchCustomerListInSqflite(
       CustomerListFetchEvent event, Emitter<CustomerState> emit) async {
     List<Map<String, dynamic>>? fetchRecound = await dbh.queryAllRows(
@@ -272,42 +280,56 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       emit(EditCustomerFailedState(failedMessage: e.toString()));
     }
   }
- 
- _deleteCustomerMethodSqflite(
-      DeleteCustomerEvent event, Emitter<CustomerState> emit) async {
 
-    int result =
-        await dbh.delete("Customer", "id=?", [event.customerId]);
+  _deleteCustomerMethodSqflite(
+      DeleteCustomerEvent event, Emitter<CustomerState> emit) async {
+    int result = await dbh.delete("Customer", "id=?", [event.customerId]);
     try {
       if (result > 0) {
         emit(DeleteCustomerSuccessState(
             successMessage: "$result customer deleted successfully"));
       } else {
-        emit(DeleteCustomerFailedState(failedMessage: 'Failed to add customer'));
+        emit(
+            DeleteCustomerFailedState(failedMessage: 'Failed to add customer'));
       }
     } catch (e) {
       emit(DeleteCustomerFailedState(failedMessage: e.toString()));
     }
   }
-
-
+*/
 //! API And MYSQL
-/*
+
   _fetchCustomerListInAPI(
       CustomerListFetchEvent event, Emitter<CustomerState> emit) async {
-    List<Map<String, dynamic>>? fetchRecound = await dbh.queryAllRows(
-      "Customer",
-    );
     try {
-      if (fetchRecound.isNotEmpty) {
-        emit(CustomerListLoadedState(
-            customerListResponseData: fetchRecound,
-            successMessage: "${fetchRecound.length} customer records found"));
+      var map = {};
+      http.Response apiRequest = await http.post(
+          Uri.http(ApiList.mainDomainV2, ApiList.customerListAPI),
+          body: map);
+
+      LoggerUtil().debugData("Response Code := ${apiRequest.statusCode}");
+      if (apiRequest.statusCode >= 200 && apiRequest.statusCode < 300) {
+        AllCustomersListResponseModel allCustomerResponseModel =
+            AllCustomersListResponseModel.fromJson(jsonDecode(apiRequest.body));
+
+        if (allCustomerResponseModel.data!.isNotEmpty) {
+          LoggerUtil().warningData("Success := List is not empty");
+          emit(CustomerListLoadedState(
+              customerListResponseData: allCustomerResponseModel.data,
+              successMessage: "Data Loaded Successfully"));
+        } else {
+          LoggerUtil().errorData("Error := List is empty");
+          emit(CustomerListLoadingFailedState(errorMessage: "List is empty"));
+        }
       } else {
-        emit(
-            CustomerListLoadingFailedState(errorMessage: "No Customers Found"));
+        LoggerUtil().errorData(
+            "Error := 'Request Failed with Status ${apiRequest.statusCode}");
+        emit(CustomerListLoadingFailedState(
+            errorMessage:
+                "Request Failed with Status ${apiRequest.statusCode}"));
       }
     } catch (e) {
+      LoggerUtil().errorData("Error := ${e.toString()}");
       emit(CustomerListLoadingFailedState(errorMessage: e.toString()));
     }
   }
@@ -317,29 +339,137 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     Map<String, dynamic> inputMap = {};
     inputMap['name'] = event.customerName;
     inputMap['email'] = event.customerEmail;
-    inputMap['dob'] = event.customerDob.toString();
-    inputMap['gender'] = event.customerGender?["input"];
-    inputMap['marriage_status'] = event.customerMarriageStatus?["input"];
+    inputMap['dob'] = DateFormat('d-M-y')
+        .format(DateTime.parse(event.customerDob.toString()));
+    inputMap['age'] = '30';
+    inputMap['gender'] = event.customerGender?["input"].toString();
+    inputMap['marriage_status'] =
+        event.customerMarriageStatus?["input"].toString();
+    inputMap['mobile'] = event.customerPhone;
+    inputMap['country_id'] = event.selectedCountry?.id;
+    inputMap['state_id'] = event.selectedState?.id;
+    inputMap['city_id'] = event.selectedCity?.id;
+    // inputMap['status'] = '1';
+    try {
+      http.Response apiRequest = await http.post(
+          Uri.http(ApiList.mainDomainV2, ApiList.customerAddAPI),
+          body: inputMap);
+
+      LoggerUtil().debugData("Response Code := ${apiRequest.statusCode}");
+      if (apiRequest.statusCode >= 200 && apiRequest.statusCode < 300) {
+        AddCustomerResponseModel allCustomerResponseModel =
+            AddCustomerResponseModel.fromJson(jsonDecode(apiRequest.body));
+
+        if (allCustomerResponseModel.status != 'failure') {
+          LoggerUtil()
+              .warningData("Success := ${allCustomerResponseModel.message}");
+          emit(AddCustomerSuccessState(
+              successMessage: allCustomerResponseModel.message ?? ''));
+        } else {
+          LoggerUtil().errorData(allCustomerResponseModel.message);
+          emit(AddCustomerFailedState(
+              failedMessage: allCustomerResponseModel.message ?? ''));
+        }
+      } else {
+        LoggerUtil().errorData(
+            "Error := 'Request Failed with Status ${apiRequest.statusCode}");
+        emit(AddCustomerFailedState(
+            failedMessage:
+                "Request Failed with Status ${apiRequest.statusCode}"));
+      }
+    } catch (e) {
+      LoggerUtil().errorData("Error := ${e.toString()}");
+      emit(AddCustomerFailedState(failedMessage: e.toString()));
+    }
+  }
+
+  _editCustomerMethodInAPI(
+      EditCustomerEvent event, Emitter<CustomerState> emit) async {
+    Map<String, dynamic> inputMap = {};
+    inputMap['name'] = event.customerName;
+    inputMap['email'] = event.customerEmail;
+    inputMap['age'] = '30';
+    inputMap['dob'] = DateFormat('d-M-y')
+        .format(DateTime.parse(event.customerDob.toString()));
+    inputMap['gender'] = event.customerGender?["input"].toString();
+    inputMap['marriage_status'] =
+        event.customerMarriageStatus?["input"].toString();
     inputMap['mobile'] = event.customerPhone;
     inputMap['country_id'] = event.selectedCountry?.id;
     inputMap['state_id'] = event.selectedState?.id;
     inputMap['city_id'] = event.selectedCity?.id;
     inputMap['status'] = '1';
-    LoggerUtil().warningData(inputMap);
-    int result = await dbh.insert("Customer", inputMap);
+    inputMap['id'] = event.customerId;
+
+    LoggerUtil().errorData(inputMap);
     try {
-      if (result > 0) {
-        emit(AddCustomerSuccessState(
-            successMessage: "$result customer added successfully"));
+      http.Response apiRequest = await http.post(
+          Uri.http(ApiList.mainDomainV2, ApiList.customerUpdateAPI),
+          body: inputMap);
+
+      LoggerUtil().debugData("Response Code := ${apiRequest.statusCode}");
+      if (apiRequest.statusCode >= 200 && apiRequest.statusCode < 300) {
+        UpdateCustomerResponseModel allCustomerResponseModel =
+            UpdateCustomerResponseModel.fromJson(jsonDecode(apiRequest.body));
+
+        if (allCustomerResponseModel.status != 'failure') {
+          LoggerUtil().warningData("Success := List is not empty");
+          emit(EditCustomerSuccessState(
+              successMessage: allCustomerResponseModel.message ?? ''));
+        } else {
+          LoggerUtil().errorData(allCustomerResponseModel.message);
+          emit(EditCustomerFailedState(
+              failedMessage: allCustomerResponseModel.message ?? ''));
+        }
       } else {
-        emit(AddCustomerFailedState(failedMessage: 'Failed to add customer'));
+        LoggerUtil().errorData(
+            "Error := 'Request Failed with Status ${apiRequest.statusCode}");
+        emit(EditCustomerFailedState(
+            failedMessage:
+                "Request Failed with Status ${apiRequest.statusCode}"));
       }
     } catch (e) {
-      emit(AddCustomerFailedState(failedMessage: e.toString()));
+      LoggerUtil().errorData("Error := ${e.toString()}");
+      emit(EditCustomerFailedState(failedMessage: e.toString()));
     }
   }
 
-  _editCustomerMethodInAPI(EditCustomerEvent event, Emitter<CustomerState> emit) {}
+  _deleteCustomerMethodInAPI(
+      DeleteCustomerEvent event, Emitter<CustomerState> emit) async {
+    Map<String, dynamic> inputMap = {};
+    inputMap['id'] = event.customerId;
 
-*/
+    // inputMap['status'] = '1';
+    try {
+      http.Response apiRequest = await http.post(
+          Uri.http(ApiList.mainDomainV2, ApiList.customerDeleteAPI),
+          body: inputMap);
+
+      LoggerUtil().debugData("Response Code := ${apiRequest.statusCode}");
+      if (apiRequest.statusCode >= 200 && apiRequest.statusCode < 300) {
+        DeleteCustomerResponseModel allCustomerResponseModel =
+            DeleteCustomerResponseModel.fromJson(jsonDecode(apiRequest.body));
+
+        if (allCustomerResponseModel.status != 'failure') {
+          LoggerUtil()
+              .warningData("Success := ${allCustomerResponseModel.message}");
+          emit(DeleteCustomerSuccessState(
+              successMessage: allCustomerResponseModel.message ?? ''));
+        } else {
+          LoggerUtil().errorData(allCustomerResponseModel.message);
+          emit(DeleteCustomerFailedState(
+              failedMessage: allCustomerResponseModel.message ?? ''));
+        }
+      } else {
+        LoggerUtil().errorData(
+            "Error := 'Request Failed with Status ${apiRequest.statusCode}");
+        emit(DeleteCustomerFailedState(
+            failedMessage:
+                "Request Failed with Status ${apiRequest.statusCode}"));
+      }
+    } catch (e) {
+      LoggerUtil().errorData("Error := ${e.toString()}");
+      emit(DeleteCustomerFailedState(failedMessage: e.toString()));
+    }
+  }
 }
