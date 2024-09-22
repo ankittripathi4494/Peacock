@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "572765154031",
+    "project_id": "peacock-f7fa5",
+    "storage_bucket": "peacock-f7fa5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:572765154031:android:0559103bc0b285f78d491a",
+        "android_client_info": {
+          "package_name": "com.pecock.pecockapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwgOcjLUCyiY2RtcLvYkq5MYpNDVYSq3U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
