@@ -46,7 +46,7 @@ class _RegisterScreen extends State<RegisterScreen> {
                 end: Alignment.topRight)),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          body: Center(
+          body: const Center(
             child: RegisterWidget(),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -62,8 +62,8 @@ class _RegisterScreen extends State<RegisterScreen> {
                  Navigator.pushReplacementNamed(context, '/register');
               });
             },
-            label: Text("Sign Up with Google"),
-            icon: Icon(FontAwesomeIcons.google),
+            label: const Text("Sign Up with Google"),
+            icon: const Icon(FontAwesomeIcons.google),
           ),
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pecockapp/firebase_options.dart';
 
 class FirebaseHelper {
@@ -8,6 +9,7 @@ class FirebaseHelper {
 
   static late FirebaseAnalytics firebaseAnalytics;
   static late FirebaseAuth firebaseAuth;
+  static late GoogleSignIn googleSignIn;
 
   // Private constructor
   FirebaseHelper._internal();
@@ -24,5 +26,6 @@ class FirebaseHelper {
     );
     firebaseAnalytics = FirebaseAnalytics.instance;
     firebaseAuth = FirebaseAuth.instance;
+    googleSignIn = GoogleSignIn();
   }
 }

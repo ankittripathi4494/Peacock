@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/utils/database_helper.dart';
 import 'package:pecockapp/global/utils/firebase_helper.dart';
-import 'package:pecockapp/global/utils/logger_util.dart';
 import 'package:pecockapp/modules/register/bloc/register_event.dart';
 import 'package:pecockapp/modules/register/bloc/register_state.dart';
 
