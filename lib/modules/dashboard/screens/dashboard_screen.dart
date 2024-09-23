@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
@@ -24,6 +25,23 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int screenNumber = 0;
+  @override
+  void initState() {
+    switchToDashboard();
+    super.initState();
+  }
+
+  switchToDashboard() async {
+    await FirebaseAnalytics.instance.logBeginCheckout(
+        value: 10.0,
+        currency: 'USD',
+        items: [
+          AnalyticsEventItem(
+              itemName: 'Socks', itemId: 'xjw73ndnw', price: 10.0),
+        ],
+        coupon: '10PERCENTOFF');
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<InternetCubit, InternetState>(

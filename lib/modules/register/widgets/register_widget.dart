@@ -1,9 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pecockapp/global/utils/firebase_helper.dart';
+import 'package:pecockapp/global/utils/logger_util.dart';
 import 'package:pecockapp/global/utils/utils.dart';
 import 'package:pecockapp/global/widgets/auto_schedule_task.dart';
 import 'package:pecockapp/global/widgets/form_widgtes/custom_text_form_widget.dart';
@@ -50,10 +53,21 @@ class _RegisterWidgetState extends State<RegisterWidget> {
               children: [
                 (state is RegisterFormSubmitSuccessState)
                     ? AutoScheduleTaskWidget.taskScheduler(context, task: () {
-                        Navigator.pushReplacementNamed(context, '/login');
+                        FirebaseHelper.firebaseAnalytics
+                            .logLogin(
+                                loginMethod: 'resgister',
+                                parameters: {
+                                  'username': usernameController.text
+                                },
+                                callOptions: AnalyticsCallOptions(global: true))
+                            .then((c) {
+                          Navigator.pushReplacementNamed(context, '/login');
 
-                        ToastedNotification.successToast(context,
-                            description: state.successMessage);
+                          ToastedNotification.successToast(context,
+                              description: state.successMessage);
+                        }).onError((c,k){
+                          LoggerUtil().errorData(c.toString());
+                        });
                       }, taskWaitDuration: Durations.short4)
                     : const SizedBox.shrink(),
                 (state is RegisterFormSubmitFailedState)

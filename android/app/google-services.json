@@ -12,7 +12,20 @@
           "package_name": "com.pecock.pecockapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "572765154031-6b22a91adf46arb4ssgpfk7t48gei8l9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pecock.pecockapp",
+            "certificate_hash": "e82034ff3db47852d6ddc8f3e9a0e6e35b1717a3"
+          }
+        },
+        {
+          "client_id": "572765154031-qor1dh7ion6agfa2rnl877bilo1mvm3k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDwgOcjLUCyiY2RtcLvYkq5MYpNDVYSq3U"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "572765154031-qor1dh7ion6agfa2rnl877bilo1mvm3k.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "572765154031-5ks9e5acs25ultgcm9aulholgo8l85l6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.pecock.pecockapp"
+              }
+            }
+          ]
         }
       }
     }

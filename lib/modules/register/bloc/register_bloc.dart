@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/utils/database_helper.dart';
+import 'package:pecockapp/global/utils/firebase_helper.dart';
 import 'package:pecockapp/global/utils/logger_util.dart';
 import 'package:pecockapp/modules/register/bloc/register_event.dart';
 import 'package:pecockapp/modules/register/bloc/register_state.dart';
@@ -8,7 +9,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   DatabaseHelper dbh = DatabaseHelper();
   RegisterBloc() : super(RegisterInitial()) {
     on<RegisterTextChangedEvent>(_registerValidFunc);
-    on<RegisterFormSubmitEvent>(_registerFormSubmitFunc);
+    on<RegisterFormSubmitEvent>(_registerFormSubmitFuncWithFirebase);
   }
 
   _registerValidFunc(
@@ -59,12 +60,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       ));
     }
   }
-
-  _registerFormSubmitFunc(
+/*
+  _registerFormSubmitFuncWithDB(
       RegisterFormSubmitEvent event, Emitter<RegisterState> emit) async {
     try {
-      List<Map<String, dynamic>>? fetchRecound = await dbh
-          .queryRowByClause("UserCredData", "username=?", [event.usernameData.trim()]);
+      List<Map<String, dynamic>>? fetchRecound = await dbh.queryRowByClause(
+          "UserCredData", "username=?", [event.usernameData.trim()]);
       LoggerUtil().debugData(fetchRecound);
 
       if (fetchRecound!.isEmpty) {
@@ -75,8 +76,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
           "marriage_status": event.selectedMarriageStatus!['input'],
         });
         if (insertResult > 0) {
-          emit(RegisterFormSubmitSuccessState(
-              successMessage: "Registration Successfull"));
+      emit(RegisterFormSubmitSuccessState(
+              successMessage: "Registed Successfull"));
         } else {
           emit(RegisterFormSubmitFailedState(
               failedMessage: "Cannot Register. Please Try Again"));
@@ -86,6 +87,27 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             failedMessage:
                 "Username already registered.Please choose another."));
       }
+    } catch (e) {
+      emit(RegisterFormSubmitFailedState(failedMessage: e.toString()));
+    }
+  }
+*/
+
+  _registerFormSubmitFuncWithFirebase(
+      RegisterFormSubmitEvent event, Emitter<RegisterState> emit) async {
+    try {
+      FirebaseHelper.firebaseAuth
+          .createUserWithEmailAndPassword(
+        email: event.usernameData.trim(),
+        password: event.passwordData.trim(),
+      )
+          .then((c) {
+        emit(RegisterFormSubmitSuccessState(
+            successMessage: "Registed Successfull. ${c.user?.uid}"));
+      }).onError((e, k) {
+        emit(RegisterFormSubmitFailedState(
+            failedMessage: "Cannot Register. ${e.toString()}"));
+      });
     } catch (e) {
       emit(RegisterFormSubmitFailedState(failedMessage: e.toString()));
     }

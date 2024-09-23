@@ -1,10 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/blocs/internet/internet_state.dart';
+import 'package:pecockapp/global/utils/firebase_helper.dart';
+import 'package:pecockapp/global/utils/logger_util.dart';
+import 'package:pecockapp/global/widgets/toast.dart';
 import 'package:pecockapp/modules/register/widgets/register_widget.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -39,10 +44,26 @@ class _RegisterScreen extends State<RegisterScreen> {
                 colors: [Colors.deepPurple, Colors.blue],
                 begin: Alignment.bottomLeft,
                 end: Alignment.topRight)),
-        child: const Scaffold(
+        child: Scaffold(
           backgroundColor: Colors.transparent,
           body: Center(
             child: RegisterWidget(),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () {
+              FirebaseHelper.firebaseAuth.signInWithProvider(GoogleAuthProvider()).then((c){
+                LoggerUtil().errorData("Success Sign Up :- ${c.user}");
+                ToastedNotification.successToast(context, description: "Login Successfull");
+                Navigator.pushReplacementNamed(context, '/login');
+              }).onError((e,k){
+                LoggerUtil().errorData("Error Sign Up :- ${e.toString()}");
+                ToastedNotification.errorToast(context, description: "Error Sign Up :- ${e.toString()}");
+                 Navigator.pushReplacementNamed(context, '/register');
+              });
+            },
+            label: Text("Sign Up with Google"),
+            icon: Icon(FontAwesomeIcons.google),
           ),
         ),
       ),

@@ -1,22 +1,21 @@
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
+import 'package:pecockapp/global/utils/firebase_helper.dart';
 import 'package:pecockapp/global/utils/routes_section.dart';
 import 'package:pecockapp/global/utils/shared_preferences_helper.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_bloc.dart';
 import 'package:pecockapp/modules/login/bloc/login_bloc.dart';
 import 'package:pecockapp/modules/register/bloc/register_bloc.dart';
 
-import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
   await SharedPreferencesHelper().init();
+  await FirebaseHelper().init();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
     runApp(const MyApp());
