@@ -2,11 +2,13 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/blocs/internet/internet_state.dart';
+import 'package:pecockapp/global/utils/utils.dart';
 import 'package:pecockapp/global/widgets/app_bar_widget.dart';
 import 'package:pecockapp/global/widgets/bottom_nav_bar.dart';
 import 'package:pecockapp/global/widgets/dialog.dart';
@@ -25,6 +27,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int screenNumber = 0;
+  AdmobInterstitial? interstitialAd; // Declare the variable first
   @override
   void initState() {
     switchToDashboard();
@@ -32,6 +35,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   switchToDashboard() async {
+    interstitialAd = AdmobInterstitial(
+      adUnitId:
+          AdmobInterstitial.testAdUnitId, // Replace with your actual ad unit ID
+      listener: (AdmobAdEvent event, Map<String, dynamic>? args) {
+        if (event == AdmobAdEvent.loaded) {
+          interstitialAd
+              ?.show(); // Use the nullable variable safely with '?' operator
+        } else if (event == AdmobAdEvent.closed) {
+          interstitialAd?.dispose();
+        }
+      },
+    );
+
+    interstitialAd?.load(); // Load the interstitial ad
+
     await FirebaseAnalytics.instance.logBeginCheckout(
         value: 10.0,
         currency: 'USD',
@@ -91,14 +109,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   end: Alignment.topRight)),
           child: Scaffold(
             backgroundColor: Colors.transparent,
-            appBar: AppBarWidget.appBarWidgetMethod(context,
-                title: const Text(
-                  "Dashboard Screen",
-                  style: TextStyle(color: Colors.white),
-                )),
+            appBar: AppBarWidget.appBarWidgetMethod(
+              context,
+              title: AdmobBanner(
+                  adUnitId: AdmobBanner.testAdUnitId,
+                  adSize: AdmobBannerSize.BANNER),
+            ),
             drawer: MyDrawer.getDrawerWidget(context),
             body: const Center(
               child: Text("Dashboard Screen"),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: Container(
+              margin: EdgeInsets.only(bottom: 20.0),
+              child: FloatingActionButton(
+                onPressed: () async {
+                  AdmobReward? admobReward;
+                  admobReward = AdmobReward(
+                    adUnitId: AdmobReward.testAdUnitId,
+                    listener: (AdmobAdEvent event, Map<String, dynamic>? args) {
+                      if (event == AdmobAdEvent.loaded) {
+                        admobReward
+                            ?.show(); // Use the nullable variable safely with '?' operator
+                      } else if (event == AdmobAdEvent.closed) {
+                        admobReward?.dispose();
+                      }
+                    },
+                  );
+                  admobReward.load();
+                },
+                child: Icon(Icons.ad_units), // An icon to represent the action
+              ),
             ),
             bottomNavigationBar:
                 BottomNavBarWidget.bottomNavBar(context, screenNumber, (d) {

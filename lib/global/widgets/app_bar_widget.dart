@@ -14,6 +14,7 @@ class AppBarWidget {
       centerTitle: true,
       actionsIconTheme: const IconThemeData(color: Colors.white),
       actions: (actions != null) ? actions : null,
+      
     );
   }
 }

@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable, use_build_context_synchronously
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -58,45 +57,73 @@ class _LoginScreen extends State<LoginScreen> {
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () async {
               try {
+                // Start Google Sign-In process
                 final GoogleSignInAccount? googleUser =
                     await FirebaseHelper.googleSignIn.signIn();
-                if (googleUser == null) return;
+                if (googleUser == null) {
+                  // User canceled the sign-in process
+                  LoggerUtil().warningData("Google Sign-In canceled by user.");
+                  return;
+                }
 
+                // Obtain authentication details
                 final GoogleSignInAuthentication googleAuth =
                     await googleUser.authentication;
 
+                LoggerUtil()
+                    .warningData("Google Auth: ${googleAuth.toString()}");
+
+                // Create a new credential
                 final AuthCredential credential = GoogleAuthProvider.credential(
                   accessToken: googleAuth.accessToken,
                   idToken: googleAuth.idToken,
                 );
 
-                final UserCredential userCredential = await FirebaseHelper
-                    .firebaseAuth
-                    .signInWithCredential(credential);
-                if (userCredential.user != null) {
-                  // Log success message
-                  LoggerUtil()
-                      .errorData("Success Sign Up :- ${userCredential.user}");
+                FirebaseHelper.firebaseAuth
+                    .signInWithCredential(credential)
+                    .then((userCredential) {
+                  if (userCredential.user != null) {
+                    // Log success and save session
+                    LoggerUtil()
+                        .debugData("Success Sign Up: ${userCredential.user}");
 
-                  // Save user session locally using SharedPreferences
-                  sph.setBool("isLoggedIn", true);
-                  sph.setString("username", userCredential.user?.email ?? '');
-                  sph.setString("user", jsonEncode(userCredential.user));
+                    // Save user session locally using SharedPreferences
+                    sph.setBool("isLoggedIn", true);
+                    sph.setString("username", userCredential.user?.email ?? '');
+                    sph.setString("uid", userCredential.user?.uid??'');
 
-                  // Show success toast
-                  ToastedNotification.successToast(context,
-                      description: "Login Successful");
+                    // Show success toast
+                    ToastedNotification.successToast(context,
+                        description: "Login Successful");
 
-                  // Navigate to dashboard after successful login
-                  Navigator.pushReplacementNamed(context, '/dashboard');
-                }
-              } catch (e) {
-                // Log error and show toast on failure
-                LoggerUtil().errorData("Error Sign Up :- ${e.toString()}");
+                    // Navigate to the dashboard after successful login
+                    Navigator.pushReplacementNamed(context, '/dashboard');
+                  } else {
+                    // Log error if userCredential is null
+                    LoggerUtil()
+                        .errorData("Error Sign Up: UserCredential is null");
+                    ToastedNotification.errorToast(context,
+                        description: "Error Sign Up");
+
+                    // Navigate back to the login screen
+                    Navigator.pushReplacementNamed(context, '/login');
+                  }
+                }).onError((e,k){
+                   // Catch any errors, log, and display error toast
+                LoggerUtil().errorData("Error Sign Up: ${e.toString()}");
                 ToastedNotification.errorToast(context,
-                    description: "Error Sign Up :- ${e.toString()}");
+                    description: "Error Sign Up: ${e.toString()}");
 
-                // Navigate back to login screen if sign-in fails
+                // Ensure to navigate back to login if there's an error
+                Navigator.pushReplacementNamed(context, '/login');
+                });
+              } catch (e) {
+                // Catch any errors, log, and display error toast
+                LoggerUtil().errorData("Error Sign Up: ${e.toString()}");
+                ToastedNotification.errorToast(context,
+                    description: "Error Sign Up: ${e.toString()}");
+
+                // Ensure to navigate back to login if there's an error
                 Navigator.pushReplacementNamed(context, '/login');
               }
             },

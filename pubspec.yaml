@@ -51,6 +51,7 @@ dependencies:
   firebase_analytics: ^11.3.2
   firebase_auth: ^5.3.0
   google_sign_in: ^6.2.1
+  admob_flutter: ^3.0.0
 
 dev_dependencies:
   flutter_test:
