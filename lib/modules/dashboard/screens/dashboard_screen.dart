@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/blocs/internet/internet_state.dart';
-import 'package:pecockapp/global/utils/utils.dart';
 import 'package:pecockapp/global/widgets/app_bar_widget.dart';
 import 'package:pecockapp/global/widgets/bottom_nav_bar.dart';
 import 'package:pecockapp/global/widgets/dialog.dart';
@@ -122,7 +121,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
             floatingActionButton: Container(
-              margin: EdgeInsets.only(bottom: 20.0),
+              margin: const EdgeInsets.only(bottom: 20.0),
               child: FloatingActionButton(
                 onPressed: () async {
                   AdmobReward? admobReward;
@@ -139,7 +138,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   );
                   admobReward.load();
                 },
-                child: Icon(Icons.ad_units), // An icon to represent the action
+                child: const Icon(Icons.ad_units), // An icon to represent the action
               ),
             ),
             bottomNavigationBar:

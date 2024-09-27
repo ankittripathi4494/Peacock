@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/utils/firebase_helper.dart';
+import 'package:pecockapp/global/utils/logger_util.dart';
 import 'package:pecockapp/global/utils/routes_section.dart';
 import 'package:pecockapp/global/utils/shared_preferences_helper.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_bloc.dart';
@@ -17,6 +18,10 @@ Future<void> main() async {
   Admob.initialize();
   await SharedPreferencesHelper().init();
   await FirebaseHelper().init();
+
+  FirebaseHelper.generateFirebaseToken().then((c){
+    LoggerUtil().debugData("Token :- $c");
+  });
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
     runApp(const MyApp());
