@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:admob_flutter/admob_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:camera/camera.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,11 +22,14 @@ NotificationChannel nc = NotificationChannel(
   channelDescription: 'This is Test App',
 );
 
+late List<CameraDescription> listOfCameras;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Admob.initialize();
   await SharedPreferencesHelper().init();
   await initialFirebaseNotification();
+  listOfCameras = await availableCameras();
   FirebaseMessaging.onBackgroundMessage(_backgroundNotificationHandler);
   SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],

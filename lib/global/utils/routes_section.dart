@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pecockapp/modules/business/screens/business_screen.dart';
+import 'package:pecockapp/modules/camera/screens/camera_screen.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_bloc.dart';
 import 'package:pecockapp/modules/customer/screens/add_customer_screen.dart';
 import 'package:pecockapp/modules/customer/screens/customer_screen.dart';
@@ -56,6 +57,23 @@ class RoutesSection {
             child: LoginScreen(
               argus: const {},
             ),
+          ),
+        );
+      case '/camera':
+        if (args is Map<String, dynamic>) {
+          return PageTransition(
+            duration: Durations.medium4,
+            type: PageTransitionType.fade,
+            child: CameraScreen(
+              argus: args,
+            ),
+          );
+        }
+        return PageTransition(
+          duration: Durations.medium4,
+          type: PageTransitionType.fade,
+          child: CameraScreen(
+            argus: const {},
           ),
         );
       case '/register':

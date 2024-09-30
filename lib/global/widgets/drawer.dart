@@ -19,14 +19,16 @@ class MyDrawer {
                 colors: [Colors.deepPurple, Colors.blue],
                 begin: Alignment.bottomLeft,
                 end: Alignment.topRight)),
-        child: ListView.builder(
-          itemCount: 1000,
-          itemBuilder: (context, index) {
-            return ListTile(
+        child: ListView(
+          children: [
+            ListTile(
+              onTap: () {
+                Navigator.pushNamed(context, '/camera');
+              },
               textColor: Colors.white,
-              title: Text("Hello ${index + 1}"),
-            );
-          },
+              title: const Text("Camera Screen"),
+            )
+          ],
         ),
       ),
     );
