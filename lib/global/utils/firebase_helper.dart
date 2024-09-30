@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,6 +13,7 @@ class FirebaseHelper {
   static late FirebaseAuth firebaseAuth;
   static late GoogleSignIn googleSignIn;
   static late FirebaseMessaging messaging;
+  static late FirebaseFirestore firebaseFirestore;
 
   // Private constructor
   FirebaseHelper._internal();
@@ -30,6 +32,7 @@ class FirebaseHelper {
     firebaseAuth = FirebaseAuth.instance;
     googleSignIn = GoogleSignIn();
     messaging = FirebaseMessaging.instance;
+    firebaseFirestore = FirebaseFirestore.instance;
   }
 
   static Future<String?> generateFirebaseToken() async {

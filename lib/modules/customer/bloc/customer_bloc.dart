@@ -1,21 +1,19 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:pecockapp/global/utils/api_list.dart';
 import 'package:pecockapp/global/utils/database_helper.dart';
+import 'package:pecockapp/global/utils/firebase_helper.dart';
 import 'package:pecockapp/global/utils/logger_util.dart';
 import 'package:pecockapp/global/utils/utils.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_event.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_state.dart';
 import 'package:http/http.dart' as http;
-import 'package:pecockapp/modules/customer/model/add_customer_response_model.dart';
-import 'package:pecockapp/modules/customer/model/all_customers_list_response_model.dart';
 import 'package:pecockapp/modules/customer/model/city_response_model.dart';
 import 'package:pecockapp/modules/customer/model/country_response_model.dart';
-import 'package:pecockapp/modules/customer/model/delete_customer_response_model.dart';
 import 'package:pecockapp/modules/customer/model/state_response_model.dart';
-import 'package:pecockapp/modules/customer/model/update_customer_response_model.dart';
 
 class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   //event -> takes input in the bloc
@@ -26,10 +24,10 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     on<CustomerCountryFetchEvent>(_customerCountryFetchMethod);
     on<CustomerStateFetchEvent>(_customerStateFetchMethod);
     on<CustomerCityFetchEvent>(_customerCityFetchMethod);
-    on<CustomerListFetchEvent>(_fetchCustomerListInAPI);
-    on<AddCustomerEvent>(_addCustomerMethodInAPI);
-    on<EditCustomerEvent>(_editCustomerMethodInAPI);
-    on<DeleteCustomerEvent>(_deleteCustomerMethodInAPI);
+    on<CustomerListFetchEvent>(_fetchCustomerListInFirestore);
+    on<AddCustomerEvent>(_addCustomerMethodInFirestore);
+    on<EditCustomerEvent>(_editCustomerMethodInFirestore);
+    on<DeleteCustomerEvent>(_deleteCustomerMethodInFirestore);
   }
 
   _customerValidFunc(
@@ -298,7 +296,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   }
 */
 //! API And MYSQL
-
+/*
   _fetchCustomerListInAPI(
       CustomerListFetchEvent event, Emitter<CustomerState> emit) async {
     try {
@@ -472,4 +470,45 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       emit(DeleteCustomerFailedState(failedMessage: e.toString()));
     }
   }
+*/
+//! FireStore
+  _fetchCustomerListInFirestore(
+      CustomerListFetchEvent event, Emitter<CustomerState> emit) {}
+
+  _addCustomerMethodInFirestore(
+      AddCustomerEvent event, Emitter<CustomerState> emit) {
+    Map<String, dynamic> inputMap = {};
+    inputMap['name'] = event.customerName;
+    inputMap['email'] = event.customerEmail;
+    inputMap['dob'] = DateFormat('d-M-y')
+        .format(DateTime.parse(event.customerDob.toString()));
+    inputMap['age'] = '30';
+    inputMap['gender'] = event.customerGender?["input"].toString();
+    inputMap['marriage_status'] =
+        event.customerMarriageStatus?["input"].toString();
+    inputMap['mobile'] = event.customerPhone;
+    inputMap['country_id'] = event.selectedCountry?.id;
+    inputMap['state_id'] = event.selectedState?.id;
+    inputMap['city_id'] = event.selectedCity?.id;
+    try {
+      CollectionReference addCollectionReference =
+          FirebaseHelper.firebaseFirestore.collection('Users');
+      addCollectionReference.add(inputMap).then((value) {
+        emit(AddCustomerSuccessState(
+            successMessage: 'Customer Added Successfully'));
+      }).catchError((error) {
+        LoggerUtil().errorData("Error := ${error.toString()}");
+        emit(AddCustomerFailedState(failedMessage: error.toString()));
+      });
+    } catch (e) {
+      LoggerUtil().errorData("Error := ${e.toString()}");
+      emit(AddCustomerFailedState(failedMessage: e.toString()));
+    }
+  }
+
+  _editCustomerMethodInFirestore(
+      EditCustomerEvent event, Emitter<CustomerState> emit) {}
+
+  _deleteCustomerMethodInFirestore(
+      DeleteCustomerEvent event, Emitter<CustomerState> emit) {}
 }

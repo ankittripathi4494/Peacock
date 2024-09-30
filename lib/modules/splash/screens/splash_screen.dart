@@ -30,7 +30,7 @@ class SplashScreen extends StatelessWidget {
             });
           } else {
             Timer(Durations.long3, () {
-              Navigator.pushReplacementNamed(context, '/login');
+              Navigator.pushReplacementNamed(context, '/dashboard');
             });
           }
         } else if (state == InternetState.internetLost) {
