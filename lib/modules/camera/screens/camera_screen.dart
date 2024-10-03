@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, unnecessary_null_comparison
 
 import 'dart:io';
 
@@ -6,6 +6,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:pecockapp/global/utils/utils.dart';
 import 'package:pecockapp/main.dart';
+import 'package:pecockapp/modules/camera/screens/widget/captured_video_widget.dart';
 
 class CameraScreen extends StatefulWidget {
   late Map<String, dynamic>? argus;
@@ -20,7 +21,10 @@ class CameraScreen extends StatefulWidget {
 
 class _CameraScreenState extends State<CameraScreen> {
   late CameraController controller;
+
   XFile? capturedImage;
+  XFile? capturedVideo;
+  bool startedRecording = false;
   @override
   void initState() {
     super.initState();
@@ -80,8 +84,11 @@ class _CameraScreenState extends State<CameraScreen> {
     if (!controller.value.isInitialized) {
       return Container();
     }
-    return (capturedImage != null)
-        ? capturedPictureScreenWidget(context)
+    // return (capturedImage != null)
+    //     ? capturedPictureScreenWidget(context)
+    //     : takePictureScreenWidget(context);
+    return (capturedVideo != null)
+        ? capturedVideoScreenWidget(context)
         : takePictureScreenWidget(context);
   }
 
@@ -117,17 +124,50 @@ class _CameraScreenState extends State<CameraScreen> {
             SizedBox(
               width: context.screenWidth * 0.3,
             ),
-            FloatingActionButton(
-              shape: const CircleBorder(),
-              backgroundColor: Colors.red,
-              onPressed: () {
-                controller.takePicture().then((c) {
-                  setState(() {
-                    capturedImage = c;
-                  });
-                }).onError((e, k) {});
-              },
-            ),
+            // FloatingActionButton(
+            //   shape: const CircleBorder(),
+            //   backgroundColor: Colors.red,
+            //   onPressed: () {
+            // controller.takePicture().then((c) {
+            //   setState(() {
+            //     capturedImage = c;
+            //   });
+            // }).onError((e, k) {});
+            //
+            //   },
+            // ),
+            (startedRecording == false)
+                ? FloatingActionButton(
+                    shape: const CircleBorder(),
+                    backgroundColor: Colors.red,
+                    onPressed: () {
+                      controller.startVideoRecording().then((c) {
+                        setState(() {
+                          startedRecording = true;
+                        });
+                      }).onError((e, k) {});
+                    },
+                    child: const Icon(
+                      Icons.videocam_rounded,
+                      color: Colors.white,
+                    ),
+                  )
+                : FloatingActionButton(
+                    shape: const CircleBorder(),
+                    backgroundColor: Colors.green,
+                    onPressed: () {
+                      controller.stopVideoRecording().then((c) {
+                        setState(() {
+                          capturedVideo = c;
+                          startedRecording = false;
+                        });
+                      }).onError((e, k) {});
+                    },
+                    child: const Icon(
+                      Icons.videocam_off_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
           ],
         ),
       ),
@@ -170,5 +210,9 @@ class _CameraScreenState extends State<CameraScreen> {
         ),
       ),
     );
+  }
+
+  Widget capturedVideoScreenWidget(BuildContext context) {
+    return CapturedVideoWidget(capturedVideo: capturedVideo);
   }
 }

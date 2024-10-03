@@ -12,6 +12,7 @@ import 'package:pecockapp/global/widgets/app_bar_widget.dart';
 import 'package:pecockapp/global/widgets/bottom_nav_bar.dart';
 import 'package:pecockapp/global/widgets/dialog.dart';
 import 'package:pecockapp/global/widgets/drawer.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class DashboardScreen extends StatefulWidget {
   late Map<String, dynamic>? argus;
@@ -72,7 +73,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       },
       child: PopScope(
         canPop: false,
-        onPopInvoked: (didPop) {
+        onPopInvokedWithResult: (didPop, result) {
           if (!didPop) {
             CustomAlertDialog.showCustomDialogForGeneral(context,
                 title: const Text("Do you want to close app??"),
@@ -115,9 +116,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   adSize: AdmobBannerSize.BANNER),
             ),
             drawer: MyDrawer.getDrawerWidget(context),
-            body: const Center(
-              child: Text("Dashboard Screen"),
-            ),
+            body: SfPdfViewer.network("https://pdfobject.com/pdf/sample.pdf"),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
             floatingActionButton: Container(
@@ -138,7 +137,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   );
                   admobReward.load();
                 },
-                child: const Icon(Icons.ad_units), // An icon to represent the action
+                child: const Icon(
+                    Icons.ad_units), // An icon to represent the action
               ),
             ),
             bottomNavigationBar:

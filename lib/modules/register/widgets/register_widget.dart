@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
+// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable, use_build_context_synchronously
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -65,7 +65,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
 
                           ToastedNotification.successToast(context,
                               description: state.successMessage);
-                        }).onError((c,k){
+                        }).onError((c, k) {
                           LoggerUtil().errorData(c.toString());
                         });
                       }, taskWaitDuration: Durations.short4)

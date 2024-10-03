@@ -38,7 +38,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
       },
       child: PopScope(
         canPop: false,
-        onPopInvoked: (didPop) {
+        onPopInvokedWithResult: (didPop, result) {
           if (!didPop) {
             CustomAlertDialog.showCustomDialogForGeneral(context,
                 title: const Text("Do you want to close app??"),

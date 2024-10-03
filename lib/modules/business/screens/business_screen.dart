@@ -37,7 +37,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
       },
       child: PopScope(
         canPop: false,
-        onPopInvoked: (didPop) {
+        onPopInvokedWithResult: (didPop, result) {
           if (!didPop) {
             CustomAlertDialog.showCustomDialogForGeneral(context,
                 title: const Text("Do you want to close app??"),
@@ -71,33 +71,33 @@ class _BusinessScreenState extends State<BusinessScreen> {
                   colors: [Colors.deepPurple, Colors.blue],
                   begin: Alignment.bottomLeft,
                   end: Alignment.topRight)),
-          child:  Scaffold(
-             backgroundColor: Colors.transparent,
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
             appBar: AppBar(
-               backgroundColor: Colors.transparent,
-               systemOverlayStyle: SystemUiOverlayStyle.light,
-               iconTheme: const IconThemeData(color: Colors.white),
-               actionsIconTheme: const IconThemeData(color: Colors.white),
+              backgroundColor: Colors.transparent,
+              systemOverlayStyle: SystemUiOverlayStyle.light,
+              iconTheme: const IconThemeData(color: Colors.white),
+              actionsIconTheme: const IconThemeData(color: Colors.white),
             ),
-              drawer: MyDrawer.getDrawerWidget(context),
+            drawer: MyDrawer.getDrawerWidget(context),
             body: const Center(
               child: Text("Business Screen"),
             ),
-            bottomNavigationBar: BottomNavBarWidget.bottomNavBar(
-                context, screenNumber, (d) {
-                   setState(() {
-                    screenNumber=d;
-                  });
-                  if (screenNumber==0) {
-                    Navigator.pushReplacementNamed(context, '/dashboard');
-                  } else if (screenNumber==1) {
-                    Navigator.pushReplacementNamed(context, '/customer-list');
-                  } else if (screenNumber==2) {
-                    Navigator.pushReplacementNamed(context, '/business');
-                  } else if (screenNumber==3) {
-                    Navigator.pushReplacementNamed(context, '/profile');
-                  }
-                }),
+            bottomNavigationBar:
+                BottomNavBarWidget.bottomNavBar(context, screenNumber, (d) {
+              setState(() {
+                screenNumber = d;
+              });
+              if (screenNumber == 0) {
+                Navigator.pushReplacementNamed(context, '/dashboard');
+              } else if (screenNumber == 1) {
+                Navigator.pushReplacementNamed(context, '/customer-list');
+              } else if (screenNumber == 2) {
+                Navigator.pushReplacementNamed(context, '/business');
+              } else if (screenNumber == 3) {
+                Navigator.pushReplacementNamed(context, '/profile');
+              }
+            }),
           ),
         ),
       ),

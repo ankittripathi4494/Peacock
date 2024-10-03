@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable
+// ignore_for_file: public_member_api_docs, sort_constructors_first, must_be_immutable, use_build_context_synchronously
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,17 +49,22 @@ class _RegisterScreen extends State<RegisterScreen> {
           body: const Center(
             child: RegisterWidget(),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () {
-              FirebaseHelper.firebaseAuth.signInWithProvider(GoogleAuthProvider()).then((c){
+              FirebaseHelper.firebaseAuth
+                  .signInWithProvider(GoogleAuthProvider())
+                  .then((c) {
                 LoggerUtil().errorData("Success Sign Up :- ${c.user}");
-                ToastedNotification.successToast(context, description: "Login Successfull");
+                ToastedNotification.successToast(context,
+                    description: "Login Successfull");
                 Navigator.pushReplacementNamed(context, '/login');
-              }).onError((e,k){
+              }).onError((e, k) {
                 LoggerUtil().errorData("Error Sign Up :- ${e.toString()}");
-                ToastedNotification.errorToast(context, description: "Error Sign Up :- ${e.toString()}");
-                 Navigator.pushReplacementNamed(context, '/register');
+                ToastedNotification.errorToast(context,
+                    description: "Error Sign Up :- ${e.toString()}");
+                Navigator.pushReplacementNamed(context, '/register');
               });
             },
             label: const Text("Sign Up with Google"),

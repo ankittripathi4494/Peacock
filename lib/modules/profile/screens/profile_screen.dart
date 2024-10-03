@@ -37,7 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
       child: PopScope(
         canPop: false,
-        onPopInvoked: (didPop) {
+        onPopInvokedWithResult: (didPop, result) {
           if (!didPop) {
             CustomAlertDialog.showCustomDialogForGeneral(context,
                 title: const Text("Do you want to close app??"),
@@ -73,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   end: Alignment.topRight)),
           child: Scaffold(
             backgroundColor: Colors.transparent,
-              appBar: AppBarWidget.appBarWidgetMethod(context),
+            appBar: AppBarWidget.appBarWidgetMethod(context),
             drawer: MyDrawer.getDrawerWidget(context),
             body: const Center(
               child: Text("Profile Screen"),

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:admob_flutter/admob_flutter.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:media_store_plus/media_store_plus.dart';
 import 'package:pecockapp/global/blocs/internet/internet_cubit.dart';
 import 'package:pecockapp/global/utils/firebase_helper.dart';
 import 'package:pecockapp/global/utils/logger_util.dart';
@@ -15,6 +17,7 @@ import 'package:pecockapp/global/utils/shared_preferences_helper.dart';
 import 'package:pecockapp/modules/customer/bloc/customer_bloc.dart';
 import 'package:pecockapp/modules/login/bloc/login_bloc.dart';
 import 'package:pecockapp/modules/register/bloc/register_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 NotificationChannel nc = NotificationChannel(
   channelKey: 'peacock',
@@ -23,7 +26,7 @@ NotificationChannel nc = NotificationChannel(
 );
 
 late List<CameraDescription> listOfCameras;
-
+final mediaStorePlugin = MediaStore();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Admob.initialize();
@@ -31,6 +34,26 @@ Future<void> main() async {
   await initialFirebaseNotification();
   listOfCameras = await availableCameras();
   FirebaseMessaging.onBackgroundMessage(_backgroundNotificationHandler);
+
+  if (Platform.isAndroid) {
+    await MediaStore.ensureInitialized();
+  }
+
+  List<Permission> permissions = [
+    Permission.storage,
+  ];
+
+  if ((await mediaStorePlugin.getPlatformSDKInt()) >= 33) {
+    permissions.add(Permission.photos);
+    permissions.add(Permission.audio);
+    permissions.add(Permission.videos);
+  }
+
+  await permissions.request();
+  // we are not checking the status as it is an example app. You should (must) check it in a production app
+
+  // You have set this otherwise it throws AppFolderNotSetException
+  MediaStore.appFolder = "Peacock";
   SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
   ).then((_) {
